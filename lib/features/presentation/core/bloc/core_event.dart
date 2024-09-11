@@ -5,4 +5,6 @@ class CoreEvent with _$CoreEvent {
   const factory CoreEvent.init() = _Init;
 
   const factory CoreEvent.changeTab(CoreTab tab) = _ChangeTab;
+
+  const factory CoreEvent.logout() = _Logout;
 }

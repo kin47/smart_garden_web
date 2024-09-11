@@ -43,6 +43,10 @@ class $AssetsImagesGen {
   AssetGenImage get avatarDefault =>
       const AssetGenImage('assets/images/avatar_default.png');
 
+  /// File path: assets/images/background.jpg
+  AssetGenImage get background =>
+      const AssetGenImage('assets/images/background.jpg');
+
   /// File path: assets/images/carousel_slider_1.png
   AssetGenImage get carouselSlider1 =>
       const AssetGenImage('assets/images/carousel_slider_1.png');
@@ -141,6 +145,7 @@ class $AssetsImagesGen {
         appBarBg,
         appIcon,
         avatarDefault,
+        background,
         carouselSlider1,
         carouselSlider2,
         carouselSlider3,

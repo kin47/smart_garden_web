@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:smart_garden/common/constants/auth_constants.dart';
 import 'package:smart_garden/common/constants/endpoint_constants.dart';
-import 'package:smart_garden/common/local_data/secure_storage.dart';
+import 'package:smart_garden/common/local_data/shared_pref.dart';
 import 'package:smart_garden/common/utils/functions/common_functions.dart';
 import 'package:smart_garden/di/di_setup.dart';
 import 'package:smart_garden/features/domain/events/event_bus_event.dart';
@@ -19,7 +19,7 @@ class DioInterceptor extends Interceptor {
     );
     if(isPublicApi == false) {
       final token =
-          await getIt<SecureStorage>().get(AuthConstants.token);
+          await getIt<LocalStorage>().get(AuthConstants.token);
       header[AuthConstants.authorization] = 'Bearer $token';
     }
     options.headers.addAll(header);

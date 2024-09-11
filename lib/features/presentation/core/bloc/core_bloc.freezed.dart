@@ -20,18 +20,21 @@ mixin _$CoreEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function(CoreTab tab) changeTab,
+    required TResult Function() logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function(CoreTab tab)? changeTab,
+    TResult? Function()? logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function(CoreTab tab)? changeTab,
+    TResult Function()? logout,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -39,18 +42,21 @@ mixin _$CoreEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_ChangeTab value) changeTab,
+    required TResult Function(_Logout value) logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_ChangeTab value)? changeTab,
+    TResult? Function(_Logout value)? logout,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_ChangeTab value)? changeTab,
+    TResult Function(_Logout value)? logout,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -112,6 +118,7 @@ class _$InitImpl implements _Init {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function(CoreTab tab) changeTab,
+    required TResult Function() logout,
   }) {
     return init();
   }
@@ -121,6 +128,7 @@ class _$InitImpl implements _Init {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function(CoreTab tab)? changeTab,
+    TResult? Function()? logout,
   }) {
     return init?.call();
   }
@@ -130,6 +138,7 @@ class _$InitImpl implements _Init {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function(CoreTab tab)? changeTab,
+    TResult Function()? logout,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -143,6 +152,7 @@ class _$InitImpl implements _Init {
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_ChangeTab value) changeTab,
+    required TResult Function(_Logout value) logout,
   }) {
     return init(this);
   }
@@ -152,6 +162,7 @@ class _$InitImpl implements _Init {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_ChangeTab value)? changeTab,
+    TResult? Function(_Logout value)? logout,
   }) {
     return init?.call(this);
   }
@@ -161,6 +172,7 @@ class _$InitImpl implements _Init {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_ChangeTab value)? changeTab,
+    TResult Function(_Logout value)? logout,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -240,6 +252,7 @@ class _$ChangeTabImpl implements _ChangeTab {
   TResult when<TResult extends Object?>({
     required TResult Function() init,
     required TResult Function(CoreTab tab) changeTab,
+    required TResult Function() logout,
   }) {
     return changeTab(tab);
   }
@@ -249,6 +262,7 @@ class _$ChangeTabImpl implements _ChangeTab {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
     TResult? Function(CoreTab tab)? changeTab,
+    TResult? Function()? logout,
   }) {
     return changeTab?.call(tab);
   }
@@ -258,6 +272,7 @@ class _$ChangeTabImpl implements _ChangeTab {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
     TResult Function(CoreTab tab)? changeTab,
+    TResult Function()? logout,
     required TResult orElse(),
   }) {
     if (changeTab != null) {
@@ -271,6 +286,7 @@ class _$ChangeTabImpl implements _ChangeTab {
   TResult map<TResult extends Object?>({
     required TResult Function(_Init value) init,
     required TResult Function(_ChangeTab value) changeTab,
+    required TResult Function(_Logout value) logout,
   }) {
     return changeTab(this);
   }
@@ -280,6 +296,7 @@ class _$ChangeTabImpl implements _ChangeTab {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Init value)? init,
     TResult? Function(_ChangeTab value)? changeTab,
+    TResult? Function(_Logout value)? logout,
   }) {
     return changeTab?.call(this);
   }
@@ -289,6 +306,7 @@ class _$ChangeTabImpl implements _ChangeTab {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Init value)? init,
     TResult Function(_ChangeTab value)? changeTab,
+    TResult Function(_Logout value)? logout,
     required TResult orElse(),
   }) {
     if (changeTab != null) {
@@ -305,4 +323,112 @@ abstract class _ChangeTab implements CoreEvent {
   @JsonKey(ignore: true)
   _$$ChangeTabImplCopyWith<_$ChangeTabImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LogoutImplCopyWith<$Res> {
+  factory _$$LogoutImplCopyWith(
+          _$LogoutImpl value, $Res Function(_$LogoutImpl) then) =
+      __$$LogoutImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$LogoutImplCopyWithImpl<$Res>
+    extends _$CoreEventCopyWithImpl<$Res, _$LogoutImpl>
+    implements _$$LogoutImplCopyWith<$Res> {
+  __$$LogoutImplCopyWithImpl(
+      _$LogoutImpl _value, $Res Function(_$LogoutImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$LogoutImpl implements _Logout {
+  const _$LogoutImpl();
+
+  @override
+  String toString() {
+    return 'CoreEvent.logout()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$LogoutImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() init,
+    required TResult Function(CoreTab tab) changeTab,
+    required TResult Function() logout,
+  }) {
+    return logout();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? init,
+    TResult? Function(CoreTab tab)? changeTab,
+    TResult? Function()? logout,
+  }) {
+    return logout?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? init,
+    TResult Function(CoreTab tab)? changeTab,
+    TResult Function()? logout,
+    required TResult orElse(),
+  }) {
+    if (logout != null) {
+      return logout();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Init value) init,
+    required TResult Function(_ChangeTab value) changeTab,
+    required TResult Function(_Logout value) logout,
+  }) {
+    return logout(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Init value)? init,
+    TResult? Function(_ChangeTab value)? changeTab,
+    TResult? Function(_Logout value)? logout,
+  }) {
+    return logout?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Init value)? init,
+    TResult Function(_ChangeTab value)? changeTab,
+    TResult Function(_Logout value)? logout,
+    required TResult orElse(),
+  }) {
+    if (logout != null) {
+      return logout(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Logout implements CoreEvent {
+  const factory _Logout() = _$LogoutImpl;
 }

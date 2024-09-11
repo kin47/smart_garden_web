@@ -69,11 +69,10 @@ class _HomePageState
           ),
           SliverToBoxAdapter(
             child: InkWell(
-              onTap: () {
-                context.router.push(const MyKitRoute());
-              },
+              onTap: () {},
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 24.h).copyWith(top: 8.h),
+                margin:
+                    EdgeInsets.symmetric(horizontal: 24.h).copyWith(top: 8.h),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(16.r),

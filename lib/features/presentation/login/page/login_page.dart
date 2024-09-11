@@ -71,72 +71,47 @@ class _LoginPageState
   @override
   Widget renderUI(BuildContext context) {
     return BaseScaffold(
-      appBar: BaseAppBar(
-        hasBack: false,
-        title: 'login'.tr(),
-      ),
+      hasBackgroundImage: true,
+      backgroundImage: Assets.images.background.path,
       body: Padding(
-        padding: EdgeInsets.only(top: 14.h),
-        child: ListView(
-          children: [
-            _buildUsername(),
-            SizedBox(height: 26.h),
-            _buildPassword(),
-            SizedBox(height: 12.h),
-            _buildCheckBox(),
-            SizedBox(height: 29.h),
-            _loginButton(),
-            SizedBox(height: 24.h),
-          ],
+        padding: EdgeInsets.symmetric(
+          horizontal: 1.sw > 700 ? 0.3.sw : 0.2.sw,
         ),
-      ),
-      bottomNavigation: _signUpButton(context),
-    );
-  }
-
-  Padding _signUpButton(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: 31.h,
-        left: 16.w,
-        right: 16.w,
-      ),
-      child: SizedBox(
-        height: 55.h,
-        child: AppButton(
-          key: const Key('sign_up_button'),
-          borderRadius: 28.r,
-          onPressed: _navigateToSignUp,
-          textColor: AppColors.primary500,
-          backgroundColor: AppColors.white,
-          borderColor: AppColors.primary500,
-          isOutlined: true,
-          elevation: 3.h,
-          shadowColor: AppColors.black.withOpacity(0.8),
-          title: '',
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Row(
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 24.h,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(16.r),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.1),
+                  blurRadius: 16.w,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Text(
-                    'click_here_for_first_time_users'.tr(),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.s16w600.copyWith(
-                      color: AppColors.primary500,
-                    ),
-                  ),
+                Text(
+                  'login'.tr(),
+                  style: AppTextStyles.s24w600,
                 ),
-                Assets.svg.icon16ArrowRight.svg(
-                  width: 16.w,
-                  colorFilter: const ColorFilter.mode(
-                    AppColors.primary500,
-                    BlendMode.srcIn,
-                  ),
-                ),
+                SizedBox(height: 24.h),
+                _buildUsername(),
+                SizedBox(height: 26.h),
+                _buildPassword(),
+                SizedBox(height: 12.h),
+                _buildCheckBox(),
+                SizedBox(height: 29.h),
+                _loginButton(),
+                SizedBox(height: 24.h),
               ],
             ),
           ),

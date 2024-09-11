@@ -15,7 +15,6 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:logger/logger.dart' as _i974;
 
-import '../common/local_data/secure_storage.dart' as _i646;
 import '../common/local_data/shared_pref.dart' as _i1048;
 import '../common/logger/logger.dart' as _i574;
 import '../common/notification/local_notification_helper.dart' as _i701;
@@ -46,18 +45,10 @@ import '../features/domain/repository/notification_repository.dart' as _i517;
 import '../features/domain/repository/store_repository.dart' as _i178;
 import '../features/domain/repository/weather_repository.dart' as _i743;
 import '../features/presentation/core/bloc/core_bloc.dart' as _i7;
-import '../features/presentation/diagnosis/bloc/diagnosis_bloc.dart' as _i627;
-import '../features/presentation/diagnosis_history/bloc/diagnosis_history_bloc.dart'
-    as _i1062;
-import '../features/presentation/diagnosis_image_input/bloc/diagnosis_image_input_bloc.dart'
-    as _i297;
 import '../features/presentation/home/bloc/home_bloc.dart' as _i53;
-import '../features/presentation/kit_controller/bloc/kit_controller_bloc.dart'
-    as _i318;
-import '../features/presentation/kit_environment/bloc/kit_environment_bloc.dart'
-    as _i861;
+import '../features/presentation/kit_management/bloc/kit_management_bloc.dart'
+    as _i269;
 import '../features/presentation/login/bloc/login_bloc.dart' as _i689;
-import '../features/presentation/my_kit/bloc/my_kit_bloc.dart' as _i382;
 import '../features/presentation/notification_list/bloc/notification_list_bloc.dart'
     as _i407;
 import '../features/presentation/profile/bloc/profile_bloc.dart' as _i876;
@@ -65,7 +56,8 @@ import '../features/presentation/qr_scanner/bloc/qr_scanner_bloc.dart' as _i684;
 import '../features/presentation/register/bloc/register_bloc.dart' as _i865;
 import '../features/presentation/splash/bloc/splash_bloc.dart' as _i94;
 import '../features/presentation/store/bloc/store_bloc.dart' as _i458;
-import '../features/presentation/weather/bloc/weather_bloc.dart' as _i737;
+import '../features/presentation/user_management/bloc/user_management_bloc.dart'
+    as _i248;
 import '../routes/app_pages.dart' as _i1068;
 import 'app_module.dart' as _i460;
 
@@ -82,12 +74,8 @@ _i174.GetIt $initGetIt(
   );
   final appModule = _$AppModule();
   gh.factory<_i684.QrScannerBloc>(() => _i684.QrScannerBloc());
-  gh.factory<_i382.MyKitBloc>(() => _i382.MyKitBloc());
-  gh.factory<_i318.KitControllerBloc>(() => _i318.KitControllerBloc());
-  gh.factory<_i297.DiagnosisImageInputBloc>(
-      () => _i297.DiagnosisImageInputBloc());
-  gh.factory<_i861.KitEnvironmentBloc>(() => _i861.KitEnvironmentBloc());
-  gh.factory<_i627.DiagnosisBloc>(() => _i627.DiagnosisBloc());
+  gh.factory<_i269.KitManagementBloc>(() => _i269.KitManagementBloc());
+  gh.factory<_i248.UserManagementBloc>(() => _i248.UserManagementBloc());
   gh.singleton<_i361.Dio>(() => appModule.dio);
   gh.singleton<_i1017.EventBus>(() => appModule.eventBus);
   gh.singleton<_i558.FlutterSecureStorage>(() => appModule.secureStorage);
@@ -114,10 +102,6 @@ _i174.GetIt $initGetIt(
   gh.factory<_i258.WeatherService>(
       () => _i258.WeatherService(gh<_i361.Dio>(instanceName: 'weatherDio')));
   gh.factory<_i454.NewsRepository>(() => _i732.NewsRepositoryImpl());
-  gh.factory<_i1062.DiagnosisHistoryBloc>(
-      () => _i1062.DiagnosisHistoryBloc(gh<_i971.DiagnosisRepository>()));
-  gh.singleton<_i646.SecureStorage>(
-      () => _i646.SecureStorage(storage: gh<_i558.FlutterSecureStorage>()));
   gh.factory<_i767.AuthRepository>(
       () => _i441.AuthRepositoryImpl(gh<_i633.AuthService>()));
   gh.factory<_i178.StoreRepository>(
@@ -127,6 +111,7 @@ _i174.GetIt $initGetIt(
   gh.factory<_i53.HomeBloc>(() => _i53.HomeBloc(gh<_i454.NewsRepository>()));
   gh.factory<_i94.SplashBloc>(
       () => _i94.SplashBloc(gh<_i767.AuthRepository>()));
+  gh.factory<_i7.CoreBloc>(() => _i7.CoreBloc(gh<_i767.AuthRepository>()));
   gh.factory<_i865.RegisterBloc>(
       () => _i865.RegisterBloc(gh<_i767.AuthRepository>()));
   gh.factory<_i689.LoginBloc>(
@@ -143,10 +128,6 @@ _i174.GetIt $initGetIt(
       () => _i736.WeatherRepositoryImpl(gh<_i258.WeatherService>()));
   gh.factory<_i407.NotificationListBloc>(
       () => _i407.NotificationListBloc(gh<_i517.NotificationRepository>()));
-  gh.factory<_i7.CoreBloc>(
-      () => _i7.CoreBloc(gh<_i1032.DeviceTokenRepository>()));
-  gh.factory<_i737.WeatherBloc>(
-      () => _i737.WeatherBloc(gh<_i743.WeatherRepository>()));
   return getIt;
 }
 
