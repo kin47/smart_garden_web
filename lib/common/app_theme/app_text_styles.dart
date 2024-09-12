@@ -259,6 +259,13 @@ class AppTextStyles {
     color: AppColors.primary900,
     fontWeight: FontWeight.w600,
   );
+
+  static TextStyle s24w700 = TextStyle(
+    fontSize: 24.sp,
+    color: AppColors.primary900,
+    fontWeight: FontWeight.w700,
+  );
+
   static TextStyle s24w800 = TextStyle(
     fontSize: 24.sp,
     color: AppColors.primary900,

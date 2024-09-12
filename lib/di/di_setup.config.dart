@@ -10,7 +10,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i361;
 import 'package:event_bus/event_bus.dart' as _i1017;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:logger/logger.dart' as _i974;
@@ -78,7 +77,6 @@ _i174.GetIt $initGetIt(
   gh.factory<_i248.UserManagementBloc>(() => _i248.UserManagementBloc());
   gh.singleton<_i361.Dio>(() => appModule.dio);
   gh.singleton<_i1017.EventBus>(() => appModule.eventBus);
-  gh.singleton<_i558.FlutterSecureStorage>(() => appModule.secureStorage);
   gh.singleton<_i974.Logger>(() => appModule.loggerHelper);
   gh.singleton<_i574.LogUtils>(() => _i574.LogUtils());
   gh.singleton<_i701.LocalNotificationHelper>(

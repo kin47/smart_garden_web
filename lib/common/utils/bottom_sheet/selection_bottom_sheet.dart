@@ -146,7 +146,7 @@ class _SelectionBottomSheetWidgetState
                     elevation: 0,
                   ),
                   SizedBox(height: 20.h),
-                  CustomTextFieldSearch(
+                  BaseSearchTextField(
                     focusNode: FocusNode(),
                     searchTextController: searchController,
                     onSearch: search,

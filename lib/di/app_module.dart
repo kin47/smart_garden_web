@@ -1,4 +1,3 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:smart_garden/base/network/dio/dio_builder.dart';
 import 'package:dio/dio.dart';
@@ -16,13 +15,6 @@ abstract class AppModule {
 
   @singleton
   EventBus get eventBus => EventBus();
-
-  @singleton
-  FlutterSecureStorage get secureStorage => const FlutterSecureStorage(
-    aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
-    ),
-  );
 
   @singleton
   Logger get loggerHelper => Logger(

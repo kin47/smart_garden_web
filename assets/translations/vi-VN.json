@@ -84,5 +84,13 @@
   "resend_email": "Gửi lại email",
   "resend_email_success": "Gửi lại email thành công, vui lòng kiểm tra email để xác thực tài khoản",
   "notification_list": "Danh sách thông báo",
-  "mark_all_as_read": "Đánh dấu tất cả là đã đọc"
+  "mark_all_as_read": "Đánh dấu tất cả là đã đọc",
+  "user_management": "Quản lý người dùng",
+  "kit_management": "Quản lý Kit",
+  "user_search_hint": "Nhập tên người dùng hoặc email để tìm kiếm",
+  "search": "Tìm kiếm",
+  "stt": "STT",
+  "name": "Tên",
+  "can_predict_disease": "Dự đoán bệnh",
+  "can_receive_notification": "Nhận thông báo"
 }
