@@ -92,5 +92,6 @@
   "stt": "STT",
   "name": "Tên",
   "can_predict_disease": "Dự đoán bệnh",
-  "can_receive_notification": "Nhận thông báo"
+  "can_receive_notification": "Nhận thông báo",
+  "can_auto_control": "Tự động điều khiển"
 }

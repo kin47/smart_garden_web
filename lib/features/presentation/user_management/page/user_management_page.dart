@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_garden/base/base_widget.dart';
 import 'package:smart_garden/common/index.dart';
+import 'package:smart_garden/common/widgets/active_status_circle.dart';
 import 'package:smart_garden/common/widgets/base_header_information.dart';
 import 'package:smart_garden/common/widgets/buttons/app_button.dart';
 import 'package:smart_garden/common/widgets/table_paginator_bar.dart';
@@ -70,54 +71,85 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(4),
-                ),
-                child: DataTable2(
-                  sortAscending: true,
-                  sortColumnIndex: 1,
-                  headingRowHeight: 30.0,
-                  dataRowHeight: 36.0,
-                  horizontalMargin: 0,
-                  showCheckboxColumn: false,
-                  columnSpacing: 10,
-                  headingRowColor: WidgetStateProperty.all(
-                    AppColors.primary700,
-                  ),
-                  headingTextStyle: AppTextStyles.s16w700.copyWith(
-                    color: AppColors.white,
-                  ),
-                  columns: [
-                    DataColumn2(
-                      label: Center(
-                        child: Text('stt'.tr()),
-                      ),
-                      numeric: true,
-                      fixedWidth: 50,
-                    ),
-                    DataColumn2(
-                      label: Text('name'.tr()),
-                      size: ColumnSize.M,
-                      onSort: (columnIndex, ascending) {},
-                    ),
-                    DataColumn2(
-                      label: Text('email'.tr()),
-                      size: ColumnSize.M,
-                    ),
-                    DataColumn2(
-                      label: Text('phone_number'.tr()),
-                      size: ColumnSize.M,
-                    ),
-                    DataColumn2(
-                      label: Text('can_predict_disease'.tr()),
-                      size: ColumnSize.S,
-                      onSort: (columnIndex, ascending) {},
-                    ),
-                    DataColumn2(
-                      label: Text('can_receive_notification'.tr()),
-                      size: ColumnSize.S,
-                      onSort: (columnIndex, ascending) {},
+                  boxShadow: const [
+                    BoxShadow(
+                      color: AppColors.gray200,
+                      blurRadius: 10,
+                      offset: Offset(0, 2),
                     ),
                   ],
-                  rows: [],
+                ),
+                child: Theme(
+                  data: ThemeData(
+                    iconTheme: const IconThemeData(
+                      color: AppColors.white,
+                    ),
+                  ),
+                  child: DataTable2(
+                    sortAscending: true,
+                    sortColumnIndex: 1,
+                    headingRowHeight: 36,
+                    dataRowHeight: 36,
+                    horizontalMargin: 0,
+                    showCheckboxColumn: false,
+                    columnSpacing: 10,
+                    headingRowColor: WidgetStateProperty.all(
+                      AppColors.primary700,
+                    ),
+                    headingTextStyle: AppTextStyles.s16w700.copyWith(
+                      color: AppColors.white,
+                    ),
+                    columns: [
+                      DataColumn2(
+                        label: Center(
+                          child: Text('stt'.tr()),
+                        ),
+                        numeric: true,
+                        fixedWidth: 50,
+                      ),
+                      DataColumn2(
+                        label: Text('name'.tr()),
+                        size: ColumnSize.M,
+                        onSort: (columnIndex, ascending) {},
+                      ),
+                      DataColumn2(
+                        label: Text('email'.tr()),
+                        size: ColumnSize.M,
+                      ),
+                      DataColumn2(
+                        label: Text('phone_number'.tr()),
+                        size: ColumnSize.M,
+                      ),
+                      DataColumn2(
+                        label: Center(child: Text('can_predict_disease'.tr())),
+                        size: ColumnSize.S,
+                        onSort: (columnIndex, ascending) {},
+                      ),
+                      DataColumn2(
+                        label: Center(
+                            child: Text('can_receive_notification'.tr())),
+                        size: ColumnSize.S,
+                        onSort: (columnIndex, ascending) {},
+                      ),
+                      DataColumn2(
+                        label: Center(child: Text('can_auto_control'.tr())),
+                        size: ColumnSize.S,
+                        onSort: (columnIndex, ascending) {},
+                      ),
+                    ],
+                    rows: List.generate(
+                      20,
+                      (index) => _userDataRow(
+                        stt: index + 1,
+                        name: 'Nguyễn Văn A',
+                        email: 'minhtq4@rikkeisoft.com',
+                        phoneNumber: '0123456789',
+                        canPredictDisease: true,
+                        canReceiveNotification: true,
+                        canAutoControl: true,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -130,6 +162,52 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
           ],
         ),
       ),
+    );
+  }
+
+  DataRow _userDataRow({
+    required int stt,
+    required String name,
+    required String email,
+    required String phoneNumber,
+    required bool canPredictDisease,
+    required bool canReceiveNotification,
+    required bool canAutoControl,
+  }) {
+    return DataRow(
+      color: WidgetStateProperty.resolveWith<Color?>(
+        (Set<WidgetState> states) {
+          if (stt % 2 == 0) {
+            return AppColors.gray100;
+          }
+          return null;
+        },
+      ),
+      cells: [
+        DataCell(
+          Center(
+            child: Text(stt.toString()),
+          ),
+        ),
+        DataCell(
+          Text(name),
+        ),
+        DataCell(
+          Text(email),
+        ),
+        DataCell(
+          Text(phoneNumber),
+        ),
+        DataCell(
+          Center(child: ActiveStatusCircle(isActive: canPredictDisease)),
+        ),
+        DataCell(
+          Center(child: ActiveStatusCircle(isActive: canReceiveNotification)),
+        ),
+        DataCell(
+          Center(child: ActiveStatusCircle(isActive: canAutoControl)),
+        ),
+      ],
     );
   }
 }
