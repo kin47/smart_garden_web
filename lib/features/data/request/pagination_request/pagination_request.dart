@@ -5,7 +5,9 @@ part 'pagination_request.g.dart';
 
 @freezed
 class PaginationRequest with _$PaginationRequest {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   factory PaginationRequest({
+    String? searchKey,
     required int page,
     @Default(ApiConfig.limit) int limit,
   }) = _PaginationRequest;

@@ -118,7 +118,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
                       ),
                       DataColumn2(
                         label: Text('phone_number'.tr()),
-                        size: ColumnSize.M,
+                        size: ColumnSize.S,
                       ),
                       DataColumn2(
                         label: Center(child: Text('can_predict_disease'.tr())),
