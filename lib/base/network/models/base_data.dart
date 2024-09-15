@@ -8,7 +8,11 @@ part 'base_data.g.dart';
   explicitToJson: true,
 )
 class BaseListData<T> {
-  BaseListData({this.data, this.status});
+  BaseListData({
+    this.data,
+    this.status,
+    this.totalPages,
+  });
 
   factory BaseListData.fromJson(
     Map<String, dynamic> json,
@@ -21,6 +25,10 @@ class BaseListData<T> {
 
   @JsonKey(name: 'data')
   List<T>? data;
+  @JsonKey(name: 'total_pages')
+  int? totalPages;
+  @JsonKey(name: 'total_count')
+  int? totalCount;
   @JsonKey(name: 'status')
   int? status;
 }

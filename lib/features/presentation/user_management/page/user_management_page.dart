@@ -3,11 +3,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_garden/base/base_widget.dart';
+import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/common/widgets/active_status_circle.dart';
 import 'package:smart_garden/common/widgets/base_header_information.dart';
 import 'package:smart_garden/common/widgets/buttons/app_button.dart';
 import 'package:smart_garden/common/widgets/table_paginator_bar.dart';
+import 'package:smart_garden/features/domain/enum/sort_type.dart';
+import 'package:smart_garden/features/domain/enum/user_order_by_type.dart';
 import 'package:smart_garden/features/presentation/user_management/bloc/user_management_bloc.dart';
 import 'package:data_table_2/data_table_2.dart';
 
@@ -22,6 +25,25 @@ class UserManagementPage extends StatefulWidget {
 class _UserManagementPageState extends BaseState<UserManagementPage,
     UserManagementEvent, UserManagementState, UserManagementBloc> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    bloc.add(const UserManagementEvent.getData());
+  }
+
+  @override
+  void listener(BuildContext context, UserManagementState state) {
+    super.listener(context, state);
+    if (state.status == BaseStateStatus.failed) {
+      DialogService.showInformationDialog(
+        context,
+        key: const Key('store_error_dialog'),
+        title: 'error'.tr(),
+        description: state.message,
+      );
+    }
+  }
 
   @override
   Widget renderUI(BuildContext context) {
@@ -61,7 +83,13 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
                     color: AppColors.white,
                     size: 20,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    bloc.add(
+                      UserManagementEvent.getData(
+                        searchKey: _searchController.text,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -85,83 +113,141 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
                       color: AppColors.white,
                     ),
                   ),
-                  child: DataTable2(
-                    sortAscending: true,
-                    sortColumnIndex: 1,
-                    headingRowHeight: 36,
-                    dataRowHeight: 36,
-                    horizontalMargin: 0,
-                    showCheckboxColumn: false,
-                    columnSpacing: 10,
-                    headingRowColor: WidgetStateProperty.all(
-                      AppColors.primary700,
-                    ),
-                    headingTextStyle: AppTextStyles.s16w700.copyWith(
-                      color: AppColors.white,
-                    ),
-                    columns: [
-                      DataColumn2(
-                        label: Center(
-                          child: Text('stt'.tr()),
-                        ),
-                        numeric: true,
-                        fixedWidth: 50,
-                      ),
-                      DataColumn2(
-                        label: Text('name'.tr()),
-                        size: ColumnSize.M,
-                        onSort: (columnIndex, ascending) {},
-                      ),
-                      DataColumn2(
-                        label: Text('email'.tr()),
-                        size: ColumnSize.M,
-                      ),
-                      DataColumn2(
-                        label: Text('phone_number'.tr()),
-                        size: ColumnSize.S,
-                      ),
-                      DataColumn2(
-                        label: Center(child: Text('can_predict_disease'.tr())),
-                        size: ColumnSize.S,
-                        onSort: (columnIndex, ascending) {},
-                      ),
-                      DataColumn2(
-                        label: Center(
-                            child: Text('can_receive_notification'.tr())),
-                        size: ColumnSize.S,
-                        onSort: (columnIndex, ascending) {},
-                      ),
-                      DataColumn2(
-                        label: Center(child: Text('can_auto_control'.tr())),
-                        size: ColumnSize.S,
-                        onSort: (columnIndex, ascending) {},
-                      ),
-                    ],
-                    rows: List.generate(
-                      20,
-                      (index) => _userDataRow(
-                        stt: index + 1,
-                        name: 'Nguyễn Văn A',
-                        email: 'minhtq4@rikkeisoft.com',
-                        phoneNumber: '0123456789',
-                        canPredictDisease: true,
-                        canReceiveNotification: true,
-                        canAutoControl: true,
-                      ),
-                    ),
-                  ),
+                  child: _buildTable(),
                 ),
               ),
             ),
             SizedBox(height: 16.h),
             Center(
               child: TablePaginatorBar(
-                onTapPage: (page) {},
+                onTapPage: (page) {
+                  bloc.add(
+                    UserManagementEvent.getData(
+                      page: page,
+                    ),
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTable() {
+    return blocBuilder(
+      (context, state) => DataTable2(
+        sortAscending: state.orderType == SortType.asc,
+        sortColumnIndex: state.orderBy?.columnIndex,
+        headingRowHeight: 36,
+        dataRowHeight: 36,
+        horizontalMargin: 0,
+        showCheckboxColumn: false,
+        columnSpacing: 10,
+        headingRowColor: WidgetStateProperty.all(
+          AppColors.primary700,
+        ),
+        headingTextStyle: AppTextStyles.s16w700.copyWith(
+          color: AppColors.white,
+        ),
+        columns: [
+          DataColumn2(
+            label: Center(
+              child: Text('stt'.tr()),
+            ),
+            numeric: true,
+            fixedWidth: 50,
+            onSort: (columnIndex, ascending) {
+              bloc.add(
+                UserManagementEvent.getData(
+                  orderBy: UserOrderByType.id,
+                  orderType: ascending ? SortType.asc : SortType.desc,
+                ),
+              );
+            },
+          ),
+          DataColumn2(
+            label: Text('name'.tr()),
+            size: ColumnSize.M,
+            onSort: (columnIndex, ascending) {
+              bloc.add(
+                UserManagementEvent.getData(
+                  orderBy: UserOrderByType.name,
+                  orderType: ascending ? SortType.asc : SortType.desc,
+                ),
+              );
+            },
+          ),
+          DataColumn2(
+            label: Text('email'.tr()),
+            size: ColumnSize.M,
+            onSort: (columnIndex, ascending) {
+              bloc.add(
+                UserManagementEvent.getData(
+                  orderBy: UserOrderByType.email,
+                  orderType: ascending ? SortType.asc : SortType.desc,
+                ),
+              );
+            },
+          ),
+          DataColumn2(
+            label: Text('phone_number'.tr()),
+            size: ColumnSize.S,
+          ),
+          DataColumn2(
+            label: Center(child: Text('can_predict_disease'.tr())),
+            size: ColumnSize.S,
+            onSort: (columnIndex, ascending) {
+              bloc.add(
+                UserManagementEvent.getData(
+                  orderBy: UserOrderByType.canPredictDisease,
+                  orderType: ascending ? SortType.asc : SortType.desc,
+                ),
+              );
+            },
+          ),
+          DataColumn2(
+            label: Center(child: Text('can_receive_notification'.tr())),
+            size: ColumnSize.S,
+            onSort: (columnIndex, ascending) {
+              bloc.add(
+                UserManagementEvent.getData(
+                  orderBy: UserOrderByType.canReceiveNoti,
+                  orderType: ascending ? SortType.asc : SortType.desc,
+                ),
+              );
+            },
+          ),
+          DataColumn2(
+            label: Center(child: Text('can_auto_control'.tr())),
+            size: ColumnSize.S,
+            onSort: (columnIndex, ascending) {
+              bloc.add(
+                UserManagementEvent.getData(
+                  orderBy: UserOrderByType.canAutoControl,
+                  orderType: ascending ? SortType.asc : SortType.desc,
+                ),
+              );
+            },
+          ),
+        ],
+        rows: List.generate(
+          state.users.length,
+          (index) => _userDataRow(
+            stt: index + 1,
+            name: state.users[index].name,
+            email: state.users[index].email,
+            phoneNumber: state.users[index].phoneNumber,
+            canPredictDisease: state.users[index].canPredictDisease,
+            canReceiveNotification: state.users[index].canReceiveNoti,
+            canAutoControl: state.users[index].canAutoControl,
+          ),
+        ),
+      ),
+      buildWhen: (previous, current) => previous.users != current.users ||
+          previous.orderBy != current.orderBy ||
+          previous.orderType != current.orderType,
     );
   }
 

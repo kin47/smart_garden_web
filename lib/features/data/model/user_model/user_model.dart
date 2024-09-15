@@ -16,6 +16,7 @@ class UserModel with _$UserModel {
     bool? isAdmin,
     bool? canPredictDisease,
     bool? canReceiveNoti,
+    bool? canAutoControl,
     bool? isVerified,
   }) = _UserModel;
 

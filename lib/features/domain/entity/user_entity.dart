@@ -9,6 +9,7 @@ class UserEntity {
   final bool isAdmin;
   final bool canPredictDisease;
   final bool canReceiveNoti;
+  final bool canAutoControl;
   final bool isVerified;
 
   const UserEntity({
@@ -20,6 +21,7 @@ class UserEntity {
     this.isAdmin = false,
     this.canPredictDisease = false,
     this.canReceiveNoti = false,
+    this.canAutoControl = false,
     this.isVerified = false,
   });
 
@@ -33,6 +35,7 @@ class UserEntity {
       isAdmin: model.isAdmin ?? false,
       canPredictDisease: model.canPredictDisease ?? false,
       canReceiveNoti: model.canReceiveNoti ?? false,
+      canAutoControl: model.canAutoControl ?? false,
       isVerified: model.isVerified ?? false,
     );
   }
