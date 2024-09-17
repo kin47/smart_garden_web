@@ -90,10 +90,12 @@
   "user_management": "Quản lý người dùng",
   "kit_management": "Quản lý Kit",
   "user_search_hint": "Nhập tên người dùng hoặc email để tìm kiếm",
+  "kit_search_hint": "Nhập tên kit để tìm kiếm",
   "search": "Tìm kiếm",
   "stt": "STT",
   "name": "Tên",
   "can_predict_disease": "Dự đoán bệnh",
   "can_receive_notification": "Nhận thông báo",
-  "can_auto_control": "Tự động điều khiển"
+  "can_auto_control": "Tự động điều khiển",
+  "connected": "Đã kết nối"
 }

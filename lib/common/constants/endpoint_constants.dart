@@ -16,6 +16,8 @@ class EndpointConstants {
   static const String userManagement = '/admin/user-management/';
   static const String updateUserInfo = '/admin/user-management/update/{userId}';
 
+  static const String kit = '/admin/kit/';
+
   static const List<String> publicAPI = [
     login,
     register,

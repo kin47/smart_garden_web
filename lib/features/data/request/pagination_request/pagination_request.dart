@@ -12,7 +12,7 @@ class PaginationRequest with _$PaginationRequest {
     String? searchKey,
     required int page,
     @Default(ApiConfig.limit) int limit,
-    UserOrderByType? orderBy,
+    String? orderBy,
     SortType? orderType,
   }) = _PaginationRequest;
 

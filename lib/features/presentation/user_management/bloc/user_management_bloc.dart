@@ -70,7 +70,7 @@ class UserManagementBloc
       request: PaginationRequest(
         page: page ?? 1,
         searchKey: searchKey ?? state.searchKey,
-        orderBy: orderBy ?? state.orderBy,
+        orderBy: orderBy?.orderBy ?? state.orderBy?.orderBy,
         orderType: orderType ?? state.orderType,
       ),
     );
