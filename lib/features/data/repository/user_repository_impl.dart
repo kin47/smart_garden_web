@@ -6,6 +6,7 @@ import 'package:smart_garden/base/network/errors/error.dart';
 import 'package:smart_garden/base/network/errors/extension.dart';
 import 'package:smart_garden/features/data/datasource/remote/user_service/user_service.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
+import 'package:smart_garden/features/data/request/update_user_information_request/update_user_information_request.dart';
 import 'package:smart_garden/features/domain/entity/base_pagination_response_entity.dart';
 import 'package:smart_garden/features/domain/entity/user_entity.dart';
 import 'package:smart_garden/features/domain/repository/user_repository.dart';
@@ -32,6 +33,22 @@ class UserRepositoryImpl implements UserRepository {
           totalData: res.totalCount ?? 0,
         ),
       );
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
+  Future<Either<BaseError, bool>> updateUser({
+    required int userId,
+    required UpdateUserInformationRequest requestBody,
+  }) async {
+    try {
+      await _service.updateUser(
+        userId: userId,
+        requestBody: requestBody,
+      );
+      return right(true);
     } on DioException catch (e) {
       return left(e.baseError);
     }

@@ -5,6 +5,7 @@ import 'package:smart_garden/base/network/models/base_data.dart';
 import 'package:smart_garden/common/constants/endpoint_constants.dart';
 import 'package:smart_garden/features/data/model/user_model/user_model.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
+import 'package:smart_garden/features/data/request/update_user_information_request/update_user_information_request.dart';
 
 part 'user_service.g.dart';
 
@@ -17,5 +18,11 @@ abstract class UserService {
   @GET(EndpointConstants.userManagement)
   Future<BaseListData<UserModel>> getUsers({
     @Queries() required PaginationRequest request,
+  });
+
+  @PUT(EndpointConstants.updateUserInfo)
+  Future<BaseData> updateUser({
+    @Path('userId') required int userId,
+    @Body() required UpdateUserInformationRequest requestBody,
   });
 }

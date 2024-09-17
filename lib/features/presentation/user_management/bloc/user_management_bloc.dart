@@ -7,6 +7,7 @@ import 'package:smart_garden/base/bloc/base_bloc_state.dart';
 import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/base/network/errors/extension.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
+import 'package:smart_garden/features/data/request/update_user_information_request/update_user_information_request.dart';
 import 'package:smart_garden/features/domain/entity/user_entity.dart';
 import 'package:smart_garden/features/domain/enum/sort_type.dart';
 import 'package:smart_garden/features/domain/enum/user_order_by_type.dart';
@@ -33,6 +34,15 @@ class UserManagementBloc
           orderBy,
           orderType,
         ),
+        updateUser: (userId, canPredictDisease, canReceiveNotification,
+                canAutoControl) =>
+            _updateUser(
+          emit,
+          userId,
+          canPredictDisease,
+          canReceiveNotification,
+          canAutoControl,
+        ),
       );
     });
   }
@@ -49,6 +59,7 @@ class UserManagementBloc
     emit(
       state.copyWith(
         status: BaseStateStatus.loading,
+        currentPage: page ?? 1,
         searchKey: searchKey,
         orderBy: orderBy,
         orderType: orderType,
@@ -76,6 +87,51 @@ class UserManagementBloc
           users: r.data,
           totalPages: r.totalPages,
           totalUsers: r.totalData,
+        ),
+      ),
+    );
+  }
+
+  Future _updateUser(
+    Emitter<UserManagementState> emit,
+    int userId,
+    bool canPredictDisease,
+    bool canReceiveNotification,
+    bool canAutoControl,
+  ) async {
+    emit(
+      state.copyWith(status: BaseStateStatus.loading),
+    );
+
+    final res = await _repository.updateUser(
+      userId: userId,
+      requestBody: UpdateUserInformationRequest(
+        canPredictDisease: canPredictDisease,
+        canReceiveNoti: canReceiveNotification,
+        canAutoControl: canAutoControl,
+      ),
+    );
+    res.fold(
+      (l) => emit(
+        state.copyWith(
+          status: BaseStateStatus.failed,
+          message: l.getError,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          status: BaseStateStatus.idle,
+          users: [
+            for (final user in state.users)
+              if (user.id == userId)
+                user.copyWith(
+                  canPredictDisease: canPredictDisease,
+                  canReceiveNoti: canReceiveNotification,
+                  canAutoControl: canAutoControl,
+                )
+              else
+                user,
+          ]
         ),
       ),
     );

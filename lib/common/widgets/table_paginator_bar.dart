@@ -136,48 +136,52 @@ class TablePaginatorBar extends StatelessWidget {
           if (currentPage != 1)
             onMoveFirstPage != null
                 ? _ControlButton(
-                    child: SvgPicture.asset(
-                      'assets/svg/full_prev_icon.svg',
-                    ),
                     onTap: onMoveFirstPage,
+                    child: const Icon(
+                      Icons.arrow_back_sharp,
+                      size: 16.0,
+                    ),
                   )
-                : SizedBox(),
-          SizedBox(width: 6.0),
+                : const SizedBox.shrink(),
+          const SizedBox(width: 6.0),
           if (currentPage != 1)
             onPrev != null
                 ? _ControlButton(
-                    child: SvgPicture.asset(
-                      'assets/svg/prev_icon.svg',
-                    ),
                     onTap: onPrev,
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      size: 16.0,
+                    ),
                   )
-                : SizedBox(),
-          SizedBox(width: 6.0),
+                : const SizedBox.shrink(),
+          const SizedBox(width: 6.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: _pages,
           ),
-          SizedBox(width: 6.0),
+          const SizedBox(width: 6.0),
           if (currentPage != totalPage)
             onNext != null
                 ? _ControlButton(
-                    child: SvgPicture.asset(
-                      'assets/svg/next_icon.svg',
-                    ),
                     onTap: onNext,
+                    child: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16.0,
+                    ),
                   )
-                : SizedBox(),
-          SizedBox(width: 6.0),
+                : const SizedBox.shrink(),
+          const SizedBox(width: 6.0),
           if (currentPage != totalPage)
             onMoveLastPage != null
                 ? _ControlButton(
-                    child: SvgPicture.asset(
-                      'assets/svg/full_next_icon.svg',
-                    ),
                     onTap: onMoveLastPage,
+                    child: const Icon(
+                      Icons.arrow_forward_sharp,
+                      size: 16.0,
+                    ),
                   )
-                : SizedBox(),
+                : const SizedBox.shrink(),
         ],
       ),
     );

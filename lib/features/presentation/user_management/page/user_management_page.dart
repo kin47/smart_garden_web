@@ -13,6 +13,7 @@ import 'package:smart_garden/features/domain/enum/sort_type.dart';
 import 'package:smart_garden/features/domain/enum/user_order_by_type.dart';
 import 'package:smart_garden/features/presentation/user_management/bloc/user_management_bloc.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:smart_garden/features/presentation/user_management/widget/user_information_dialog.dart';
 
 @RoutePage()
 class UserManagementPage extends StatefulWidget {
@@ -119,14 +120,29 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
             ),
             SizedBox(height: 16.h),
             Center(
-              child: TablePaginatorBar(
-                onTapPage: (page) {
-                  bloc.add(
-                    UserManagementEvent.getData(
+              child: blocBuilder(
+                (context, state) => TablePaginatorBar(
+                  totalPage: state.totalPages,
+                  currentPage: state.currentPage,
+                  onPrev: () {
+                    bloc.add(UserManagementEvent.getData(
+                      page: state.currentPage - 1,
+                    ));
+                  },
+                  onNext: () {
+                    bloc.add(UserManagementEvent.getData(
+                      page: state.currentPage + 1,
+                    ));
+                  },
+                  onTapPage: (page) {
+                    bloc.add(UserManagementEvent.getData(
                       page: page,
-                    ),
-                  );
-                },
+                    ));
+                  },
+                ),
+                buildWhen: (previous, current) =>
+                    previous.currentPage != current.currentPage ||
+                    previous.totalPages != current.totalPages,
               ),
             ),
           ],
@@ -236,6 +252,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
           state.users.length,
           (index) => _userDataRow(
             stt: index + 1,
+            id: state.users[index].id,
             name: state.users[index].name,
             email: state.users[index].email,
             phoneNumber: state.users[index].phoneNumber,
@@ -245,7 +262,8 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
           ),
         ),
       ),
-      buildWhen: (previous, current) => previous.users != current.users ||
+      buildWhen: (previous, current) =>
+          previous.users != current.users ||
           previous.orderBy != current.orderBy ||
           previous.orderType != current.orderType,
     );
@@ -253,6 +271,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
 
   DataRow _userDataRow({
     required int stt,
+    required int id,
     required String name,
     required String email,
     required String phoneNumber,
@@ -294,6 +313,28 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
           Center(child: ActiveStatusCircle(isActive: canAutoControl)),
         ),
       ],
+      onSelectChanged: (value) {
+        DialogService.showCustomDialog(
+          context,
+          UserInformationDialog(
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber,
+            canPredictDisease: canPredictDisease,
+            canReceiveNotification: canReceiveNotification,
+            canAutoControl: canAutoControl,
+            onSave:
+                (canPredictDisease, canReceiveNotification, canAutoControl) {
+              bloc.add(UserManagementEvent.updateUser(
+                userId: id,
+                canPredictDisease: canPredictDisease,
+                canReceiveNotification: canReceiveNotification,
+                canAutoControl: canAutoControl,
+              ));
+            },
+          ),
+        );
+      },
     );
   }
 }

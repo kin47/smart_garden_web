@@ -8,4 +8,11 @@ class UserManagementEvent with _$UserManagementEvent {
     UserOrderByType? orderBy,
     SortType? orderType,
   }) = _GetData;
+
+  const factory UserManagementEvent.updateUser({
+    required int userId,
+    required bool canPredictDisease,
+    required bool canReceiveNotification,
+    required bool canAutoControl,
+  }) = _UpdateUser;
 }

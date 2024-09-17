@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:smart_garden/common/constants/other_constants.dart';
 import 'package:smart_garden/common/notification/push_notification_helper.dart';
 import 'package:smart_garden/common/utils/dialog/loading_widget.dart';
@@ -90,7 +91,19 @@ class MyApp extends StatelessWidget {
               data: MediaQuery.of(context).copyWith(
                 textScaler: const TextScaler.linear(1),
               ),
-              child: child ?? const SizedBox(),
+              child: ResponsiveBreakpoints.builder(
+                breakpoints: [
+                  const Breakpoint(start: 0, end: 450, name: MOBILE),
+                  const Breakpoint(start: 451, end: 800, name: TABLET),
+                  const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+                  const Breakpoint(
+                    start: 1921,
+                    end: double.infinity,
+                    name: '4K',
+                  ),
+                ],
+                child: child ?? const SizedBox(),
+              ),
             ),
           ),
           routerConfig: _appRoute.config(),

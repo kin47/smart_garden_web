@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:smart_garden/features/data/model/user_model/user_model.dart';
 
-class UserEntity {
+class UserEntity extends Equatable {
   final int id;
   final String email;
   final String name;
@@ -39,4 +40,44 @@ class UserEntity {
       isVerified: model.isVerified ?? false,
     );
   }
+
+  UserEntity copyWith({
+    int? id,
+    String? email,
+    String? name,
+    String? phoneNumber,
+    String? avatar,
+    bool? isAdmin,
+    bool? canPredictDisease,
+    bool? canReceiveNoti,
+    bool? canAutoControl,
+    bool? isVerified,
+  }) {
+    return UserEntity(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      avatar: avatar ?? this.avatar,
+      isAdmin: isAdmin ?? this.isAdmin,
+      canPredictDisease: canPredictDisease ?? this.canPredictDisease,
+      canReceiveNoti: canReceiveNoti ?? this.canReceiveNoti,
+      canAutoControl: canAutoControl ?? this.canAutoControl,
+      isVerified: isVerified ?? this.isVerified,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    id,
+    email,
+    name,
+    phoneNumber,
+    avatar,
+    isAdmin,
+    canPredictDisease,
+    canReceiveNoti,
+    canAutoControl,
+    isVerified,
+  ];
 }

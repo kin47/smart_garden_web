@@ -14,6 +14,7 @@ class EndpointConstants {
   static const String deviceToken = '/device-token';
 
   static const String userManagement = '/admin/user-management/';
+  static const String updateUserInfo = '/admin/user-management/update/{userId}';
 
   static const List<String> publicAPI = [
     login,
