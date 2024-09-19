@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:smart_garden/base/base_widget.dart';
 import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
-import 'package:smart_garden/common/notification/local_notification_helper.dart';
 import 'package:smart_garden/common/widgets/base_tab_bar.dart';
 import 'package:smart_garden/di/di_setup.dart';
 import 'package:smart_garden/features/domain/entity/bottom_nav_bar_item_entity.dart';

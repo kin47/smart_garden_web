@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:smart_garden/common/app_theme/app_colors.dart';
 import 'package:smart_garden/common/app_theme/app_text_styles.dart';
 import 'package:smart_garden/common/widgets/buttons/app_button.dart';
@@ -30,7 +31,8 @@ class BaseTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.primary700,
-      width: 1.sw > 700 ? 0.2.sw : 50,
+      width:
+          ResponsiveBreakpoints.of(context).smallerThan(DESKTOP) ? 50 : 0.2.sw,
       height: 1.sh,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,14 +60,17 @@ class BaseTabBar extends StatelessWidget {
               vertical: 16.h,
             ),
             child: AppButton(
-              title: 1.sw > 700 ? 'logout'.tr() : '',
+              title: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                  ? ''
+                  : 'logout'.tr(),
               backgroundColor: AppColors.red,
-              leadingIcon: 1.sw < 700
-                  ? const Icon(
-                      Icons.logout,
-                      color: AppColors.white,
-                    )
-                  : null,
+              leadingIcon:
+                  ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                      ? const Icon(
+                          Icons.logout,
+                          color: AppColors.white,
+                        )
+                      : null,
               onPressed: onLogout,
             ),
           ),
@@ -97,7 +102,9 @@ class BaseTabItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.r),
         ),
         margin: EdgeInsets.symmetric(
-          horizontal: 1.sw > 700 ? 8.w : 16.w,
+          horizontal: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+              ? 16.w
+              : 8.w,
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
@@ -105,19 +112,28 @@ class BaseTabItem extends StatelessWidget {
             horizontal: 16.w,
           ),
           child: Row(
-            mainAxisSize: 1.sw > 700 ? MainAxisSize.min : MainAxisSize.max,
+            mainAxisSize: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                ? MainAxisSize.max
+                : MainAxisSize.min,
             mainAxisAlignment:
-                1.sw > 700 ? MainAxisAlignment.start : MainAxisAlignment.center,
+                ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
             children: [
               item.type.icon(
                 isActive,
-                size: 1.sw > 700 ? 28.w : 24,
+                size: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                    ? 24
+                    : 28.w,
               ),
               SizedBox(
-                width: 1.sw > 700 ? 16.w : 0,
+                width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                    ? 0
+                    : 16.w,
               ),
-              1.sw > 700
-                  ? Expanded(
+              ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+                  ? const SizedBox.shrink()
+                  : Expanded(
                       child: Text(
                         item.type.title,
                         style: AppTextStyles.s16w400.copyWith(
@@ -125,8 +141,7 @@ class BaseTabItem extends StatelessWidget {
                               isActive ? AppColors.primary700 : AppColors.white,
                         ),
                       ),
-                    )
-                  : const SizedBox.shrink(),
+                    ),
             ],
           ),
         ),

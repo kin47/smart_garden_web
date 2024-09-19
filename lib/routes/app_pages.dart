@@ -12,7 +12,11 @@ class AppPages extends RootStackRouter {
   RouteType get defaultRouteType => const RouteType.material();
   @override
   List<AutoRoute> routes = [
-    AutoRoute(path: AppRoutes.initial, page: SplashRoute.page),
+    AutoRoute(
+      path: AppRoutes.initial,
+      page: SplashRoute.page,
+      initial: true,
+    ),
     AutoRoute(path: AppRoutes.login, page: LoginRoute.page),
     AutoRoute(path: AppRoutes.register, page: RegisterRoute.page),
     AutoRoute(
@@ -20,6 +24,6 @@ class AppPages extends RootStackRouter {
       page: CoreRoute.page,
       children: CoreTab.routes,
     ),
-    AutoRoute(path: AppRoutes.notification, page: NotificationListRoute.page),
+    AutoRoute(path: AppRoutes.kitAndUsers, page: KitAndUsersRoute.page),
   ];
 }

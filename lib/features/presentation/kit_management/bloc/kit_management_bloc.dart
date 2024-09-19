@@ -6,6 +6,7 @@ import 'package:smart_garden/base/bloc/base_bloc.dart';
 import 'package:smart_garden/base/bloc/base_bloc_state.dart';
 import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/base/network/errors/extension.dart';
+import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
 import 'package:smart_garden/features/domain/entity/kit_entity.dart';
 import 'package:smart_garden/features/domain/enum/kit_order_by_type.dart';
@@ -21,8 +22,8 @@ part 'kit_management_bloc.freezed.dart';
 part 'kit_management_bloc.g.dart';
 
 @injectable
-class KitManagementBloc
-    extends BaseBloc<KitManagementEvent, KitManagementState> {
+class KitManagementBloc extends BaseBloc<KitManagementEvent, KitManagementState>
+    with BaseCommonMethodMixin {
   KitManagementBloc(this._repository) : super(KitManagementState.init()) {
     on<KitManagementEvent>((event, emit) async {
       await event.when(

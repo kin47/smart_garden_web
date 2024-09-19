@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smart_garden/common/app_theme/app_colors.dart';
 
 class TablePaginatorBar extends StatelessWidget {

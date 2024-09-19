@@ -1,4 +1,4 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +10,11 @@ import 'package:smart_garden/common/widgets/active_status_circle.dart';
 import 'package:smart_garden/common/widgets/base_header_information.dart';
 import 'package:smart_garden/common/widgets/buttons/app_button.dart';
 import 'package:smart_garden/common/widgets/table_paginator_bar.dart';
+import 'package:smart_garden/features/domain/entity/kit_entity.dart';
 import 'package:smart_garden/features/domain/enum/kit_order_by_type.dart';
 import 'package:smart_garden/features/domain/enum/sort_type.dart';
 import 'package:smart_garden/features/presentation/kit_management/bloc/kit_management_bloc.dart';
+import 'package:smart_garden/routes/app_pages.gr.dart';
 
 @RoutePage()
 class KitManagementPage extends StatefulWidget {
@@ -119,7 +121,7 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
             SizedBox(height: 16.h),
             Center(
               child: blocBuilder(
-                    (context, state) => TablePaginatorBar(
+                (context, state) => TablePaginatorBar(
                   totalPage: state.totalPages,
                   currentPage: state.currentPage,
                   onPrev: () {
@@ -139,7 +141,7 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
                   },
                 ),
                 buildWhen: (previous, current) =>
-                previous.currentPage != current.currentPage ||
+                    previous.currentPage != current.currentPage ||
                     previous.totalPages != current.totalPages,
               ),
             ),
@@ -206,10 +208,7 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
           state.kits.length,
           (index) => _userDataRow(
             stt: index + 1,
-            id: state.kits[index].id,
-            name: state.kits[index].name,
-            password: state.kits[index].password,
-            connected: true,
+            kit: state.kits[index],
           ),
         ),
       ),
@@ -222,10 +221,7 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
 
   DataRow _userDataRow({
     required int stt,
-    required int id,
-    required String name,
-    required String password,
-    required bool connected,
+    required KitEntity kit,
   }) {
     return DataRow(
       color: WidgetStateProperty.resolveWith<Color?>(
@@ -243,17 +239,21 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
           ),
         ),
         DataCell(
-          Text(name),
+          Text(kit.name),
         ),
         DataCell(
-          Text(password),
+          Text(kit.password),
         ),
         DataCell(
-          Center(child: ActiveStatusCircle(isActive: connected)),
+          Center(child: ActiveStatusCircle(isActive: kit.connected)),
         ),
       ],
       onSelectChanged: (value) {
-
+        context.router.push(
+          KitAndUsersRoute(
+            kit: kit,
+          ),
+        );
       },
     );
   }
