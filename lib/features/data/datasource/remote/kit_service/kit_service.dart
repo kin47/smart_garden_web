@@ -14,7 +14,7 @@ abstract class KitService {
   @factoryMethod
   factory KitService(Dio dio) = _KitService;
 
-  @GET(EndpointConstants.kit)
+  @GET(EndpointConstants.kitManagement)
   Future<BaseListData<KitModel>> getKits({
     @Queries() required PaginationRequest request,
   });

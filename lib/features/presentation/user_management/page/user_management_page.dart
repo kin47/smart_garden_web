@@ -121,7 +121,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
             SizedBox(height: 16.h),
             Center(
               child: blocBuilder(
-                (context, state) => TablePaginatorBar(
+                (context, state) => state.totalPages > 0 ? TablePaginatorBar(
                   totalPage: state.totalPages,
                   currentPage: state.currentPage,
                   onPrev: () {
@@ -139,7 +139,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
                       page: page,
                     ));
                   },
-                ),
+                ) : const SizedBox.shrink(),
                 buildWhen: (previous, current) =>
                     previous.currentPage != current.currentPage ||
                     previous.totalPages != current.totalPages,

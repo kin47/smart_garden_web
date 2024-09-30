@@ -28,7 +28,7 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
   Widget renderUI(BuildContext context) {
     return BaseScaffold(
       appBar: BaseAppBar(
-        title: 'widget.kit.name',
+        title: widget.kit.name,
       ),
       body: SingleChildScrollView(
         child: ResponsiveRowColumn(
@@ -147,12 +147,19 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
                   children: [
                     BaseSearchTextField(
                       hintText: 'user_search_hint'.tr(),
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        bloc.add(
+                          KitAndUsersEvent.searchUsers(
+                            searchKey: value,
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 16.h),
                     Expanded(
                       child: CustomListViewSeparated<UserEntity>(
                         controller: bloc.userSearchPagingController,
+                        firstPageProgressIndicator: const SizedBox.shrink(),
                         builder: (context, user, index) => Container(
                           decoration: BoxDecoration(
                             color: index % 2 == 0
@@ -161,13 +168,13 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
                           ),
                           child: ListTile(
                             title: Text(
-                              'User $index',
+                              user.name,
                               style: AppTextStyles.s16w500.copyWith(
                                 color: AppColors.black,
                               ),
                             ),
                             subtitle: Text(
-                              'user_email'.tr(),
+                              user.email,
                               style: AppTextStyles.s14w400.copyWith(
                                 color: AppColors.black,
                               ),
@@ -175,7 +182,7 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
                             trailing: IconButton(
                               icon: const Icon(
                                 Icons.add,
-                                color: AppColors.red,
+                                color: AppColors.primary700,
                               ),
                               onPressed: () {
                                 bloc.add(
@@ -187,7 +194,8 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
                             ),
                           ),
                         ),
-                        separatorBuilder: (context, index) => const Divider(),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox.shrink(),
                       ),
                     ),
                   ],

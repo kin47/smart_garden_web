@@ -93,7 +93,7 @@ class _BaseSearchTextFieldState extends State<BaseSearchTextField> {
                   onTap: () {
                     //clear text when tap icon clear
                     _searchTextController.text = '';
-                    widget.onSearch?.call(_searchTextController.text.trim());
+                    widget.onChanged?.call(_searchTextController.text.trim());
                   },
                   child: const Icon(Icons.close),
                 ),

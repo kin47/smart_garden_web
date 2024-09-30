@@ -39,6 +39,23 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<Either<BaseError, List<UserEntity>>> getUsersPaging({
+    required PaginationRequest request,
+  }) async {
+    try {
+      final res = await _service.getUsers(request: request);
+      if (res.data == null) {
+        return left(BaseError.httpUnknownError('error_system'.tr()));
+      }
+      return right(
+        res.data!.map((e) => UserEntity.fromModel(e)).toList(),
+      );
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
   Future<Either<BaseError, bool>> updateUser({
     required int userId,
     required UpdateUserInformationRequest requestBody,

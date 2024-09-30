@@ -16,6 +16,7 @@ dependencies:
   easy_localization: ^3.0.7
   get_it: ^7.7.0
   dartz: 0.10.1
+  rxdart: ^0.28.0
   retrofit: ^4.1.0
   dio: ^5.5.0+1
   logger: ^2.4.0

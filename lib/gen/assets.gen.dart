@@ -35,9 +35,9 @@ class $AssetsImagesGen {
   AssetGenImage get appBarBg =>
       const AssetGenImage('assets/images/app_bar_bg.png');
 
-  /// File path: assets/images/favicon.png
+  /// File path: assets/images/app_icon.png
   AssetGenImage get appIcon =>
-      const AssetGenImage('assets/images/favicon.png');
+      const AssetGenImage('assets/images/app_icon.png');
 
   /// File path: assets/images/avatar_default.png
   AssetGenImage get avatarDefault =>

@@ -4,6 +4,10 @@ part of 'kit_and_users_bloc.dart';
 class KitAndUsersEvent with _$KitAndUsersEvent {
   const factory KitAndUsersEvent.init() = _Init;
 
+  const factory KitAndUsersEvent.searchUsers({
+    required String searchKey,
+  }) = SearchUsers;
+
   const factory KitAndUsersEvent.getData({
     String? searchKey,
     int? page,

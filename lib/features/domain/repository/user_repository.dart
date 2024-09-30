@@ -10,6 +10,11 @@ abstract class UserRepository {
     required PaginationRequest request,
   });
 
+  Future<Either<BaseError, List<UserEntity>>>
+      getUsersPaging({
+    required PaginationRequest request,
+  });
+
   Future<Either<BaseError, bool>> updateUser({
     required int userId,
     required UpdateUserInformationRequest requestBody,

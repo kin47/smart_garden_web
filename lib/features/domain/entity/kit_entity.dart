@@ -4,13 +4,19 @@ class KitEntity {
   final int id;
   final String name;
   final String password;
-  final bool connected;
+  final bool isAutoLight;
+  final bool isAutoPump;
+  final int lightThreshold;
+  final int pumpThreshold;
 
   KitEntity({
     required this.id,
     required this.name,
     required this.password,
-    required this.connected,
+    this.isAutoLight = false,
+    this.isAutoPump = false,
+    this.lightThreshold = 0,
+    this.pumpThreshold = 0,
   });
 
   factory KitEntity.fromModel(KitModel model) {
@@ -18,7 +24,10 @@ class KitEntity {
       id: model.id ?? 0,
       name: model.name ?? '',
       password: model.password ?? '',
-      connected: model.connected ?? false,
+      isAutoLight: model.isAutoLight ?? false,
+      isAutoPump: model.isAutoPump ?? false,
+      lightThreshold: model.lightThreshold ?? 0,
+      pumpThreshold: model.pumpThreshold ?? 0,
     );
   }
 }

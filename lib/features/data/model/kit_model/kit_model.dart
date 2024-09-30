@@ -10,7 +10,10 @@ class KitModel with _$KitModel {
     int? id,
     String? name,
     String? password,
-    bool? connected,
+    bool? isAutoLight,
+    bool? isAutoPump,
+    int? lightThreshold,
+    int? pumpThreshold,
   }) = _KitModel;
 
   factory KitModel.fromJson(Map<String, dynamic> json) =>

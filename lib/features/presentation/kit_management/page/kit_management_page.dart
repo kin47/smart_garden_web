@@ -121,25 +121,27 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
             SizedBox(height: 16.h),
             Center(
               child: blocBuilder(
-                (context, state) => TablePaginatorBar(
-                  totalPage: state.totalPages,
-                  currentPage: state.currentPage,
-                  onPrev: () {
-                    bloc.add(KitManagementEvent.getData(
-                      page: state.currentPage - 1,
-                    ));
-                  },
-                  onNext: () {
-                    bloc.add(KitManagementEvent.getData(
-                      page: state.currentPage + 1,
-                    ));
-                  },
-                  onTapPage: (page) {
-                    bloc.add(KitManagementEvent.getData(
-                      page: page,
-                    ));
-                  },
-                ),
+                (context, state) => state.totalPages > 0
+                    ? TablePaginatorBar(
+                        totalPage: state.totalPages,
+                        currentPage: state.currentPage,
+                        onPrev: () {
+                          bloc.add(KitManagementEvent.getData(
+                            page: state.currentPage - 1,
+                          ));
+                        },
+                        onNext: () {
+                          bloc.add(KitManagementEvent.getData(
+                            page: state.currentPage + 1,
+                          ));
+                        },
+                        onTapPage: (page) {
+                          bloc.add(KitManagementEvent.getData(
+                            page: page,
+                          ));
+                        },
+                      )
+                    : const SizedBox.shrink(),
                 buildWhen: (previous, current) =>
                     previous.currentPage != current.currentPage ||
                     previous.totalPages != current.totalPages,
@@ -200,7 +202,19 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
             size: ColumnSize.M,
           ),
           DataColumn2(
-            label: Center(child: Text('connected'.tr())),
+            label: Center(child: Text('is_auto_light'.tr())),
+            size: ColumnSize.S,
+          ),
+          DataColumn2(
+            label: Center(child: Text('is_auto_pump'.tr())),
+            size: ColumnSize.S,
+          ),
+          DataColumn2(
+            label: Center(child: Text('light_threshold'.tr())),
+            size: ColumnSize.S,
+          ),
+          DataColumn2(
+            label: Center(child: Text('pump_threshold'.tr())),
             size: ColumnSize.S,
           ),
         ],
@@ -245,7 +259,16 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
           Text(kit.password),
         ),
         DataCell(
-          Center(child: ActiveStatusCircle(isActive: kit.connected)),
+          Center(child: ActiveStatusCircle(isActive: kit.isAutoLight)),
+        ),
+        DataCell(
+          Center(child: ActiveStatusCircle(isActive: kit.isAutoPump)),
+        ),
+        DataCell(
+          Center(child: Text(kit.lightThreshold.toString())),
+        ),
+        DataCell(
+          Center(child: Text(kit.pumpThreshold.toString())),
         ),
       ],
       onSelectChanged: (value) {
