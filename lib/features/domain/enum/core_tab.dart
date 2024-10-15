@@ -6,9 +6,9 @@ import 'package:smart_garden/common/app_theme/app_colors.dart';
 import 'package:smart_garden/routes/app_pages.gr.dart';
 
 enum CoreTab {
-  home,
   user,
-  kit;
+  kit,
+  chat;
 
   String get path => name;
 
@@ -18,16 +18,16 @@ enum CoreTab {
 
   PageRouteInfo<dynamic> get pageRouteInfo {
     switch (this) {
-      case CoreTab.home:
-        return const HomeRoute();
       case CoreTab.user:
         return const UserManagementRoute();
       case CoreTab.kit:
         return const KitManagementRoute();
+      case CoreTab.chat:
+        return const ChatListRoute();
     }
   }
 
-  static CoreTab get defaultRoute => CoreTab.home;
+  static CoreTab get defaultRoute => CoreTab.user;
 
   static List<AutoRoute> get routes => [
         RedirectRoute(path: '', redirectTo: CoreTab.defaultRoute.path),
@@ -41,23 +41,17 @@ enum CoreTab {
 
   PageInfo get pageInfo {
     switch (this) {
-      case CoreTab.home:
-        return HomeRoute.page;
       case CoreTab.user:
         return UserManagementRoute.page;
       case CoreTab.kit:
         return KitManagementRoute.page;
+      case CoreTab.chat:
+        return ChatListRoute.page;
     }
   }
 
   Widget icon(bool isActive, {double? size}) {
     switch (this) {
-      case CoreTab.home:
-        return Icon(
-          Icons.home_filled,
-          size: size ?? 28.w,
-          color: isActive ? AppColors.primary700 : AppColors.white,
-        );
       case CoreTab.user:
         return Icon(
           Icons.person_3_rounded,
@@ -67,6 +61,12 @@ enum CoreTab {
       case CoreTab.kit:
         return Icon(
           Icons.devices_sharp,
+          size: size ?? 28.w,
+          color: isActive ? AppColors.primary700 : AppColors.white,
+        );
+      case CoreTab.chat:
+        return Icon(
+          Icons.chat_rounded,
           size: size ?? 28.w,
           color: isActive ? AppColors.primary700 : AppColors.white,
         );

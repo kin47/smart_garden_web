@@ -12,7 +12,7 @@ class CoreState extends BaseBlocState {
 
   factory CoreState.init() => const CoreState(
         status: BaseStateStatus.init,
-        activeTab: CoreTab.home,
+        activeTab: CoreTab.user,
       );
 
   @override

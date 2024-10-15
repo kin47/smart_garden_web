@@ -16,6 +16,9 @@ class EndpointConstants {
   static const String userManagement = '/admin/user-management/';
   static const String updateUserInfo = '/admin/user-management/update/{userId}';
 
+  static const String getChatMessages = '/chat/get-chat-messages';
+  static const String sendMessage = '/chat/send-message';
+
   static const String kit = '/admin/kit/';
 
   static const List<String> publicAPI = [
