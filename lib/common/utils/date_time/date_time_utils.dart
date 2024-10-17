@@ -22,6 +22,7 @@ enum Pattern {
   ddMMyyyyWithSeparator,
   ddMMMyyyyWithSeparator,
   yyyyMM,
+  ddMM,
   ddMMyyyy,
   hhmmEEEEddMMyyyy,
   hhmma,
@@ -66,6 +67,8 @@ extension PatternExtension on Pattern {
         return 'yyyy/MM/dd (E)';
       case Pattern.yyyyMMddHHmmss_jp:
         return 'yyyy/MM/dd (E) HH:mm:ss';
+      case Pattern.ddMM:
+        return 'dd/MM';
       case Pattern.ddMMyyyy:
         return 'dd/MM/yyyy';
       case Pattern.yyyyMMdd:

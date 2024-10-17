@@ -4,7 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:smart_garden/base/network/models/base_data.dart';
 import 'package:smart_garden/common/constants/endpoint_constants.dart';
 import 'package:smart_garden/features/data/model/chat_message_model/chat_message_model.dart';
-import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
+import 'package:smart_garden/features/data/request/get_chat_messages_request/get_chat_messages_request.dart';
 
 part 'chat_service.g.dart';
 
@@ -16,6 +16,6 @@ abstract class ChatService {
 
   @GET(EndpointConstants.getChatMessages)
   Future<BaseListData<ChatMessageModel>> getChatMessages({
-    @Queries() required PaginationRequest request,
+    @Queries() required GetChatMessagesRequest request,
   });
 }

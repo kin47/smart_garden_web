@@ -1,20 +1,18 @@
 import 'dart:async';
 
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:smart_garden/base/bloc/base_bloc.dart';
 import 'package:smart_garden/base/bloc/base_bloc_state.dart';
 import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
-import 'package:smart_garden/features/domain/entity/chat_message_entity.dart';
-import 'package:smart_garden/features/domain/enum/sender_enum.dart';
-import 'package:smart_garden/features/domain/enum/ws_action_enum.dart';
+import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
 
 part 'chat_list_event.dart';
@@ -22,6 +20,7 @@ part 'chat_list_event.dart';
 part 'chat_list_state.dart';
 
 part 'chat_list_bloc.freezed.dart';
+
 part 'chat_list_bloc.g.dart';
 
 @injectable
@@ -31,14 +30,19 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     on<ChatListEvent>(
       (event, emit) async {
         await event.when(
-          init: () => _init(emit),
-          readMessage: () => _readMessage(emit),
-          getChatMessages: (page) => _getChatMessages(emit, page),
-          sendMessage: (message) => _sendMessage(emit, message),
-          updateLastSeenMessageIndex: (index) =>
-              _updateLastSeenMessageIndex(emit, index),
+          getChatList: (page, searchKey) => _getChatList(emit, searchKey, page),
+          searchUser: (searchKey) => null,
+          selectChatPerson: (chatPerson) => _selectChatPerson(emit, chatPerson),
         );
       },
+    );
+    on<SearchUser>(
+      (event, emit) async {
+        await _searchUser(emit, event.searchKey);
+      },
+      transformer: (events, mapper) => events.debounceTime(
+        const Duration(milliseconds: 300),
+      ),
     );
   }
 
@@ -46,75 +50,38 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
   late final StreamSubscription wsMessageStream;
   final TextEditingController chatTextController = TextEditingController();
 
-  final PagingController<int, ChatMessageEntity> pagingController =
+  final PagingController<int, ChatPersonEntity> pagingController =
       PagingController(firstPageKey: 1);
 
-  Future _init(Emitter<ChatListState> emit) async {
-    wsMessageStream = _chatRepository.wsMessageStream().listen(
-      (event) async {
-        switch (event.action) {
-          case WSActionEnum.sendChatMessage:
-            _addMessage(
-              emit,
-              ChatMessageEntity(
-                message: event.data?.message ?? '',
-                time: DateTime.now(),
-                sender: event.data?.sender ?? SenderEnum.user,
-                isAdminRead: false,
-              ),
-            );
-            if (state.lastSeenMessageIndex != null) {
-              add(ChatListEvent.updateLastSeenMessageIndex(
-                  state.lastSeenMessageIndex! + 1));
-            }
-            break;
-          case WSActionEnum.seen:
-            int index = -1;
-            for (int i = 0; i < (pagingController.itemList?.length ?? 0); i++) {
-              final item = pagingController.itemList![i];
-              if (index == -1 && item.sender == SenderEnum.user) {
-                pagingController.itemList![i] = item.copyWith(isAdminRead: true);
-                index = i;
-                add(ChatListEvent.updateLastSeenMessageIndex(i));
-                break;
-              }
-            }
-            break;
-          default:
-            break;
-        }
-      },
+  Future _searchUser(Emitter<ChatListState> emit, String searchKey) async {
+    emit(
+      state.copyWith(
+        searchKey: searchKey,
+      ),
     );
-    add(const ChatListEvent.readMessage());
+    pagingController.refresh();
   }
 
-  Future _readMessage(Emitter<ChatListState> emit) async {
-    emit(state.copyWith(status: BaseStateStatus.idle));
-    final res = await _chatRepository.readMessage();
-    if (res) {
+  Future _getChatList(
+    Emitter<ChatListState> emit,
+    String? searchKey,
+    int page,
+  ) async {
+    if (page == 1) {
       emit(
         state.copyWith(
-          status: BaseStateStatus.idle,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          status: BaseStateStatus.failed,
-          message: 'error_system'.tr(),
+          status: BaseStateStatus.loading,
         ),
       );
     }
-  }
 
-  Future _getChatMessages(Emitter<ChatListState> emit, int page) async {
-    final res = await _chatRepository.getChatMessages(
+    final res = await _chatRepository.getChatList(
       request: PaginationRequest(
         page: page,
-        limit: 20,
+        searchKey: searchKey ?? state.searchKey,
       ),
     );
-    pagingControllerOnLoad<ChatMessageEntity>(
+    pagingControllerOnLoad<ChatPersonEntity>(
       page,
       pagingController,
       res,
@@ -136,36 +103,16 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     );
   }
 
-  Future _sendMessage(Emitter<ChatListState> emit, String message) async {
-    emit(state.copyWith(status: BaseStateStatus.idle));
-    final res = await _chatRepository.sendMessage(
-      message: message,
-    );
-    if (res) {
-      emit(
-        state.copyWith(
-          status: BaseStateStatus.idle,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          status: BaseStateStatus.failed,
-          message: 'error_system'.tr(),
-        ),
-      );
-    }
-  }
-
-  Future _updateLastSeenMessageIndex(Emitter<ChatListState> emit, int index) async {
-    emit(state.copyWith(lastSeenMessageIndex: index));
-  }
-
-  void _addMessage(
+  Future _selectChatPerson(
     Emitter<ChatListState> emit,
-    ChatMessageEntity message,
-  ) {
-    pagingControllerAddItem(pagingController, message, 0);
+    ChatPersonEntity chatPerson,
+  ) async {
+    emit(
+      state.copyWith(
+        status: BaseStateStatus.idle,
+        selectedChatPerson: chatPerson,
+      ),
+    );
   }
 
   @override

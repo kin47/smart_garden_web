@@ -19,7 +19,7 @@ class EndpointConstants {
   static const String getChatMessages = '/chat/get-chat-messages';
   static const String sendMessage = '/chat/send-message';
 
-  static const String kit = '/admin/kit/';
+  static const String kitManagement = '/admin/kit-management/';
 
   static const List<String> publicAPI = [
     login,

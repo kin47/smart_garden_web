@@ -9,8 +9,10 @@ import 'package:smart_garden/features/data/datasource/remote/chat_service/chat_s
 import 'package:smart_garden/features/data/model/chat_message_socket/chat_message_socket.dart';
 import 'package:smart_garden/features/data/model/web_socket_model/web_socket_model.dart';
 import 'package:smart_garden/features/data/request/connect_ws_request/connect_ws_request.dart';
+import 'package:smart_garden/features/data/request/get_chat_messages_request/get_chat_messages_request.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
 import 'package:smart_garden/features/domain/entity/chat_message_entity.dart';
+import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
 import 'package:smart_garden/features/domain/enum/sender_enum.dart';
 import 'package:smart_garden/features/domain/enum/ws_action_enum.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
@@ -23,8 +25,40 @@ class ChatRepositoryImpl implements ChatRepository {
   ChatRepositoryImpl(this._service, this._chatSocket);
 
   @override
-  Future<Either<BaseError, List<ChatMessageEntity>>> getChatMessages({
+  Future<Either<BaseError, List<ChatPersonEntity>>> getChatList({
     required PaginationRequest request,
+  }) async {
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+      return right([
+        ChatPersonEntity(
+          userId: 1,
+          username: 'Trần Quang Minh',
+          unreadMessageCount: 0,
+          lastMessage: 'Chào bạn',
+          lastMessageTime: DateTime.now(),
+        ),
+        ChatPersonEntity(
+          userId: 2,
+          username: 'Đỗ Hồng Vân',
+          unreadMessageCount: 2,
+          lastMessage: 'Tôi muốn mua 1 bộ kit\nGía cả tầm bao nhiêu thế Admin?',
+          lastMessageTime: DateTime(2024, 10, 16, 22, 37),
+        ),
+        ChatPersonEntity(
+          userId: 3,
+          username: 'Trần Anh Tuấn',
+          unreadMessageCount: 0,
+        ),
+      ]);
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
+  Future<Either<BaseError, List<ChatMessageEntity>>> getChatMessages({
+    required GetChatMessagesRequest request,
   }) async {
     try {
       final res = await _service.getChatMessages(request: request);

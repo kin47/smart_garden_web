@@ -10,6 +10,7 @@ class CachedImageWidget extends StatelessWidget {
   final double? width;
   final double? height;
   final double? radius;
+  final Widget? errorWidget;
 
   const CachedImageWidget({
     Key? key,
@@ -17,6 +18,7 @@ class CachedImageWidget extends StatelessWidget {
     this.width,
     this.height,
     this.radius,
+    this.errorWidget,
   }) : super(key: key);
 
   @override
@@ -38,7 +40,8 @@ class CachedImageWidget extends StatelessWidget {
       memCacheHeight: Config.memCacheHeight,
       memCacheWidth: Config.memCacheWidth,
       placeholder: (context, url) => const CupertinoActivityIndicator(),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
+      errorWidget: (context, url, error) =>
+          errorWidget ?? const Icon(Icons.error),
     );
   }
 }

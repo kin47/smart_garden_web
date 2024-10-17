@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:smart_garden/common/constants/other_constants.dart';
-import 'package:smart_garden/common/notification/push_notification_helper.dart';
 import 'package:smart_garden/common/utils/dialog/loading_widget.dart';
 import 'package:smart_garden/di/di_setup.dart';
 import 'package:easy_localization/easy_localization.dart';

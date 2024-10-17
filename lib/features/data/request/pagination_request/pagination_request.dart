@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:smart_garden/common/config/api_config.dart';
 import 'package:smart_garden/features/domain/enum/sort_type.dart';
-import 'package:smart_garden/features/domain/enum/user_order_by_type.dart';
 part 'pagination_request.freezed.dart';
 part 'pagination_request.g.dart';
 

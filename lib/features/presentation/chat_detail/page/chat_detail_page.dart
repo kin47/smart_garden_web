@@ -1,5 +1,4 @@
 import 'package:auto_route/annotations.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_garden/base/base_widget.dart';
 import 'package:smart_garden/common/index.dart';
@@ -7,7 +6,14 @@ import 'package:smart_garden/features/presentation/chat_detail/bloc/chat_detail_
 
 @RoutePage()
 class ChatDetailPage extends StatefulWidget {
-  const ChatDetailPage({super.key});
+  final int userId;
+  final String username;
+
+  const ChatDetailPage({
+    super.key,
+    required this.userId,
+    required this.username,
+  });
 
   @override
   State<ChatDetailPage> createState() => _ChatDetailPageState();
@@ -19,7 +25,8 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
   Widget renderUI(BuildContext context) {
     return BaseScaffold(
       appBar: BaseAppBar(
-        title: 'chat_with_admin'.tr(),
+        hasBack: false,
+        title: widget.username,
       ),
     );
   }
