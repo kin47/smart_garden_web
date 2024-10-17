@@ -100,5 +100,7 @@
   "connected": "Đã kết nối",
   "connected_users": "Người dùng đã kết nối",
   "user_search": "Tìm kiếm người dùng",
-  "chat_list": "Danh sách chat"
+  "chat_list": "Danh sách chat",
+  "chat_no_history": "Không có lịch sử chat",
+  "chat_hint": "Nhập tin nhắn..."
 }

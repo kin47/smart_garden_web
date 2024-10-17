@@ -67,6 +67,10 @@ class $AssetsImagesGen {
   AssetGenImage get carouselSlider3 =>
       const AssetGenImage('assets/images/carousel_slider_3.png');
 
+  /// File path: assets/images/chat_no_history.png
+  AssetGenImage get chatNoHistory =>
+      const AssetGenImage('assets/images/chat_no_history.png');
+
   /// File path: assets/images/cover_image_default.jpg
   AssetGenImage get coverImageDefault =>
       const AssetGenImage('assets/images/cover_image_default.jpg');
@@ -159,6 +163,7 @@ class $AssetsImagesGen {
         carouselSlider1,
         carouselSlider2,
         carouselSlider3,
+        chatNoHistory,
         coverImageDefault,
         icCloudy,
         icFoggy,

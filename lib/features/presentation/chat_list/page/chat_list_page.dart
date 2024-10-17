@@ -106,7 +106,7 @@ class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
                 visible: state.selectedChatPerson != null,
                 child: ChatDetailPage(
                   userId: state.selectedChatPerson?.userId ?? 0,
-                  username: state.selectedChatPerson?.username ?? '',
+                   username: state.selectedChatPerson?.username ?? '',
                 ),
               ),
               buildWhen: (previous, current) =>

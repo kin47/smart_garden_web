@@ -23,12 +23,12 @@ enum CoreTab {
       case CoreTab.kit:
         return const KitManagementRoute();
       case CoreTab.chat:
-        return const ChatListRoute();
+        return ChatListRoute();
     }
   }
 
   static CoreTab get defaultRoute => CoreTab.user;
-
+  static List<CoreTab> staticTabs = CoreTab.values.toList()..remove(CoreTab.chat);
   static List<AutoRoute> get routes => [
         RedirectRoute(path: '', redirectTo: CoreTab.defaultRoute.path),
         ...CoreTab.values.map(
