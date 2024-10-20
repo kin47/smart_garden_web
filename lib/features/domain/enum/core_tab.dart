@@ -23,18 +23,31 @@ enum CoreTab {
       case CoreTab.kit:
         return const KitManagementRoute();
       case CoreTab.chat:
-        return ChatListRoute();
+        return const ChatListRoute(); // Treat as a parent route
     }
   }
 
   static CoreTab get defaultRoute => CoreTab.user;
-  static List<CoreTab> staticTabs = CoreTab.values.toList()..remove(CoreTab.chat);
+  static List<CoreTab> staticTabs = CoreTab.values.toList()
+    ..remove(CoreTab.chat);
+
   static List<AutoRoute> get routes => [
         RedirectRoute(path: '', redirectTo: CoreTab.defaultRoute.path),
         ...CoreTab.values.map(
           (tab) => AutoRoute(
             path: tab.path,
             page: tab.pageInfo,
+            maintainState: tab != CoreTab.chat,
+            // Add children for chat route
+            children: tab == CoreTab.chat
+                ? [
+                    AutoRoute(
+                      path: ':userId',
+                      page: ChatDetailRoute.page,
+                      maintainState: false,
+                    ),
+                  ]
+                : null,
           ),
         ),
       ];

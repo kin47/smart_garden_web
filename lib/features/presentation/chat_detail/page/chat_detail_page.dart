@@ -10,20 +10,18 @@ import 'package:smart_garden/common/utils/date_time/date_time_utils.dart';
 import 'package:smart_garden/features/domain/entity/chat_message_entity.dart';
 import 'package:smart_garden/features/domain/enum/sender_enum.dart';
 import 'package:smart_garden/features/presentation/chat_detail/bloc/chat_detail_bloc.dart';
-import 'package:smart_garden/features/presentation/chat_detail/widget/admin_message_widget.dart';
-import 'package:smart_garden/features/presentation/chat_detail/widget/chat_text_field.dart';
 import 'package:smart_garden/features/presentation/chat_detail/widget/user_message_widget.dart';
+import 'package:smart_garden/features/presentation/chat_detail/widget/chat_text_field.dart';
+import 'package:smart_garden/features/presentation/chat_detail/widget/admin_message_widget.dart';
 import 'package:smart_garden/gen/assets.gen.dart';
 
 @RoutePage()
 class ChatDetailPage extends StatefulWidget {
   final int userId;
-  final String username;
 
   const ChatDetailPage({
     super.key,
     required this.userId,
-    required this.username,
   });
 
   @override
@@ -37,26 +35,33 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
   @override
   void initState() {
     super.initState();
-    bloc.add(const ChatDetailEvent.init());
+    bloc.add(
+      ChatDetailEvent.init(
+        userId: widget.userId,
+      ),
+    );
     bloc.pagingController.addPageRequestListener((pageKey) {
-      bloc.add(ChatDetailEvent.getChatMessages(page: pageKey));
+      bloc.add(ChatDetailEvent.getChatMessages(
+        page: pageKey,
+        userId: widget.userId,
+        lastId: bloc.pagingController.itemList?.last.id,
+      ));
     });
   }
 
   @override
-  void didUpdateWidget(covariant ChatDetailPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.userId != widget.userId) {
-      bloc.add(const ChatDetailEvent.init());
-    }
+  void dispose() {
+    bloc.pagingController.dispose();
+    bloc.wsMessageStream.cancel();
+    super.dispose();
   }
 
   @override
   Widget renderUI(BuildContext context) {
     return BaseScaffold(
-      appBar: BaseAppBar(
+      appBar: const BaseAppBar(
         hasBack: false,
-        title: widget.username,
+        title: "widget.username",
       ),
       body: Column(
         children: [
@@ -104,18 +109,18 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
                     languageCode: context.locale.languageCode,
                   );
                 }
-                if (message.sender == SenderEnum.admin) {
-                  return AdminMessageWidget(
+                if (message.sender == SenderEnum.user) {
+                  return UserMessageWidget(
                     message: message,
                     firstMessageInDay: firstMessageInDay,
                   );
                 } else {
-                  if (message.isAdminRead && lastSeenMessageIndex == null) {
+                  if (message.isUserRead && lastSeenMessageIndex == null) {
                     lastSeenMessageIndex = index;
                     bloc.add(ChatDetailEvent.updateLastSeenMessageIndex(index));
                   }
                   return blocBuilder(
-                    (context, state) => UserMessageWidget(
+                    (context, state) => AdminMessageWidget(
                       message: message,
                       firstMessageInDay: firstMessageInDay,
                       isLastSeenMessage: state.lastSeenMessageIndex != null

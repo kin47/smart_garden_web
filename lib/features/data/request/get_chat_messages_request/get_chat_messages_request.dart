@@ -9,6 +9,7 @@ class GetChatMessagesRequest with _$GetChatMessagesRequest {
   factory GetChatMessagesRequest({
     int? lastId,
     @Default(ApiConfig.limit) int limit,
+    required int userId,
   }) = _GetChatMessagesRequest;
 
   factory GetChatMessagesRequest.fromJson(Map<String, dynamic> json) =>

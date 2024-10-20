@@ -29,28 +29,13 @@ class ChatRepositoryImpl implements ChatRepository {
     required PaginationRequest request,
   }) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
-      return right([
-        ChatPersonEntity(
-          userId: 1,
-          username: 'Trần Quang Minh',
-          unreadMessageCount: 0,
-          lastMessage: 'Chào bạn',
-          lastMessageTime: DateTime.now(),
-        ),
-        ChatPersonEntity(
-          userId: 2,
-          username: 'Đỗ Hồng Vân',
-          unreadMessageCount: 2,
-          lastMessage: 'Tôi muốn mua 1 bộ kit\nGía cả tầm bao nhiêu thế Admin?',
-          lastMessageTime: DateTime(2024, 10, 16, 22, 37),
-        ),
-        ChatPersonEntity(
-          userId: 3,
-          username: 'Trần Anh Tuấn',
-          unreadMessageCount: 0,
-        ),
-      ]);
+      final res = await _service.getChatList(request: request);
+      if (res.data == null) {
+        return left(BaseError.httpUnknownError('error_system'.tr()));
+      }
+      return right(
+        res.data!.map((e) => ChatPersonEntity.fromModel(e)).toList(),
+      );
     } on DioException catch (e) {
       return left(e.baseError);
     }

@@ -47,7 +47,6 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
   }
 
   final ChatRepository _chatRepository;
-  late final StreamSubscription wsMessageStream;
   final TextEditingController chatTextController = TextEditingController();
 
   final PagingController<int, ChatPersonEntity> pagingController =
@@ -96,6 +95,7 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
       onSuccess: (r) {
         emit(
           state.copyWith(
+            chatPersons: state.chatPersons + r,
             status: BaseStateStatus.idle,
           ),
         );
@@ -113,11 +113,5 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
         selectedChatPerson: chatPerson,
       ),
     );
-  }
-
-  @override
-  Future<void> close() {
-    wsMessageStream.cancel();
-    return super.close();
   }
 }

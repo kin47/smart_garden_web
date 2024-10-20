@@ -102,5 +102,7 @@
   "user_search": "Tìm kiếm người dùng",
   "chat_list": "Danh sách chat",
   "chat_no_history": "Không có lịch sử chat",
-  "chat_hint": "Nhập tin nhắn..."
+  "chat_hint": "Nhập tin nhắn...",
+  "yesterday": "Hôm qua",
+  "today": "Hôm nay"
 }

@@ -6,14 +6,14 @@ class ChatMessageEntity {
   String message;
   DateTime time;
   SenderEnum sender;
-  bool isAdminRead;
+  bool isUserRead;
 
   ChatMessageEntity({
     this.id,
     required this.message,
     required this.time,
     required this.sender,
-    required this.isAdminRead,
+    required this.isUserRead,
   });
 
   factory ChatMessageEntity.fromModel(ChatMessageModel model) {
@@ -22,7 +22,7 @@ class ChatMessageEntity {
       message: model.message ?? '',
       time: model.time ?? DateTime.now(),
       sender: model.sender ?? SenderEnum.user,
-      isAdminRead: model.isAdminRead ?? false,
+      isUserRead: model.isUserRead ?? false,
     );
   }
 
@@ -31,14 +31,14 @@ class ChatMessageEntity {
     String? message,
     DateTime? time,
     SenderEnum? sender,
-    bool? isAdminRead,
+    bool? isUserRead,
   }) {
     return ChatMessageEntity(
       id: id ?? this.id,
       message: message ?? this.message,
       time: time ?? this.time,
       sender: sender ?? this.sender,
-      isAdminRead: isAdminRead ?? this.isAdminRead,
+      isUserRead: isUserRead ?? this.isUserRead,
     );
   }
 }

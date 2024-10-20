@@ -74,7 +74,7 @@ class BaseAppBar extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 child: Assets.svg.icon16ArrowLeft.svg(
-                  width: 16.w,
+                  width: 16,
                   colorFilter: const ColorFilter.mode(
                     AppColors.white,
                     BlendMode.srcIn,

@@ -12,7 +12,7 @@ class ChatMessageModel with _$ChatMessageModel {
     String? message,
     DateTime? time,
     SenderEnum? sender,
-    bool? isAdminRead,
+    bool? isUserRead,
   }) = _ChatMessageModel;
 
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) =>

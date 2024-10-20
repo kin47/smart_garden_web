@@ -6,9 +6,9 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:smart_garden/base/base_widget.dart';
 import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
-import 'package:smart_garden/features/presentation/chat_detail/page/chat_detail_page.dart';
 import 'package:smart_garden/features/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:smart_garden/features/presentation/chat_list/widget/chat_person_item.dart';
+import 'package:smart_garden/routes/app_pages.gr.dart';
 
 @RoutePage()
 class ChatListPage extends StatefulWidget {
@@ -20,6 +20,7 @@ class ChatListPage extends StatefulWidget {
 
 class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
     ChatListState, ChatListBloc> {
+  TabsRouter? _tabsRouter;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -28,6 +29,12 @@ class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
     bloc.pagingController.addPageRequestListener((pageKey) {
       bloc.add(ChatListEvent.getChatList(page: pageKey));
     });
+  }
+
+  @override
+  void dispose() {
+    bloc.pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -80,6 +87,7 @@ class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
                         chatPerson: chatPerson,
                         isSelected: state.selectedChatPerson == chatPerson,
                         onTap: () {
+                          _tabsRouter?.setActiveIndex(index);
                           bloc.add(
                             ChatListEvent.selectChatPerson(
                               chatPerson: chatPerson,
@@ -104,12 +112,29 @@ class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
             child: blocBuilder(
               (context, state) => Visibility(
                 visible: state.selectedChatPerson != null,
-                child: ChatDetailPage(
-                  userId: state.selectedChatPerson?.userId ?? 0,
-                   username: state.selectedChatPerson?.username ?? '',
-                ),
+                child: state.chatPersons.isNotEmpty
+                    ? AutoTabsRouter(
+                        routes: [
+                          ...state.chatPersons.map(
+                            (chatPerson) => ChatDetailRoute(
+                              userId: chatPerson.userId,
+                            ),
+                          ),
+                        ],
+                        transitionBuilder: (context, child, animation) =>
+                            FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        ),
+                        builder: (context, child) {
+                          _tabsRouter = context.tabsRouter;
+                          return child;
+                        },
+                      )
+                    : const SizedBox.shrink(),
               ),
               buildWhen: (previous, current) =>
+                  previous.chatPersons != current.chatPersons ||
                   previous.selectedChatPerson != current.selectedChatPerson,
             ),
           ),

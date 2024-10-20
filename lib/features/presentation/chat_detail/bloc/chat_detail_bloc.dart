@@ -9,6 +9,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:injectable/injectable.dart';
 import 'package:smart_garden/base/bloc/index.dart';
 import 'package:smart_garden/common/mixins/paging_mixin.dart';
+import 'package:smart_garden/features/data/request/connect_ws_request/connect_ws_request.dart';
 import 'package:smart_garden/features/data/request/get_chat_messages_request/get_chat_messages_request.dart';
 import 'package:smart_garden/features/domain/entity/chat_message_entity.dart';
 import 'package:smart_garden/features/domain/enum/sender_enum.dart';
@@ -16,11 +17,8 @@ import 'package:smart_garden/features/domain/enum/ws_action_enum.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
 
 part 'chat_detail_event.dart';
-
 part 'chat_detail_state.dart';
-
 part 'chat_detail_bloc.freezed.dart';
-
 part 'chat_detail_bloc.g.dart';
 
 @injectable
@@ -29,10 +27,10 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
   ChatDetailBloc(this._chatRepository) : super(ChatDetailState.init()) {
     on<ChatDetailEvent>((event, emit) async {
       await event.when(
-        init: () => _init(emit),
+        init: (userId) => _init(emit, userId),
         readMessage: () => _readMessage(emit),
-        getChatMessages: (page, lastMessageId) =>
-            _getChatMessages(emit, page, lastMessageId),
+        getChatMessages: (page, lastMessageId, userId) =>
+            _getChatMessages(emit, page, lastMessageId, userId),
         sendMessage: (message) => _sendMessage(emit, message),
         updateLastSeenMessageIndex: (index) =>
             _updateLastSeenMessageIndex(emit, index),
@@ -47,7 +45,12 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
   final PagingController<int, ChatMessageEntity> pagingController =
       PagingController(firstPageKey: 1);
 
-  Future _init(Emitter<ChatDetailState> emit) async {
+  Future _init(Emitter<ChatDetailState> emit, int userId) async {
+    _chatRepository.chatInitialize(
+      connectRequest: ConnectWSRequest(
+        userId: userId,
+      ),
+    );
     wsMessageStream = _chatRepository.wsMessageStream().listen(
       (event) async {
         switch (event.action) {
@@ -57,8 +60,8 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
               ChatMessageEntity(
                 message: event.data?.message ?? '',
                 time: DateTime.now(),
-                sender: event.data?.sender ?? SenderEnum.user,
-                isAdminRead: false,
+                sender: event.data?.sender ?? SenderEnum.admin,
+                isUserRead: false,
               ),
             );
             if (state.lastSeenMessageIndex != null) {
@@ -72,7 +75,7 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
               final item = pagingController.itemList![i];
               if (index == -1 && item.sender == SenderEnum.user) {
                 pagingController.itemList![i] =
-                    item.copyWith(isAdminRead: true);
+                    item.copyWith(isUserRead: true);
                 index = i;
                 add(ChatDetailEvent.updateLastSeenMessageIndex(i));
                 break;
@@ -110,10 +113,12 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
     Emitter<ChatDetailState> emit,
     int page,
     int? lastMessageId,
+    int userId,
   ) async {
     final res = await _chatRepository.getChatMessages(
       request: GetChatMessagesRequest(
         lastId: lastMessageId,
+        userId: userId,
       ),
     );
     pagingControllerOnLoad<ChatMessageEntity>(
@@ -169,11 +174,5 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
     ChatMessageEntity message,
   ) {
     pagingControllerAddItem(pagingController, message, 0);
-  }
-
-  @override
-  Future<void> close() {
-    wsMessageStream.cancel();
-    return super.close();
   }
 }

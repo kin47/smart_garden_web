@@ -21,7 +21,8 @@ class ChatSocket {
       _wsEventStreamController =
       StreamController<WebSocketModel<ChatMessageSocket>>.broadcast();
   final int retryDelay = 1;
-  late final int _userId;
+  int? _userId;
+  final List<int> _userIdRooms = [];
   Future<String?> Function()? _getNewToken;
 
   Stream<WebSocketModel<ChatMessageSocket>> get wsEventStream =>
@@ -37,6 +38,10 @@ class ChatSocket {
     Future<String?> Function()? getNewToken,
   }) {
     _userId = connectRequest.userId;
+    if (_userIdRooms.contains(connectRequest.userId)) {
+      return;
+    }
+    _userIdRooms.add(connectRequest.userId);
     _getNewToken = getNewToken;
     _connect(connectRequest);
     _handlerListener();
@@ -59,7 +64,7 @@ class ChatSocket {
           final token = "Bearer ${await _getNewToken?.call()}";
           _connect(
             ConnectWSRequest(
-              userId: _userId,
+              userId: _userId!,
             ),
           );
           _handlerListener();
@@ -113,16 +118,16 @@ class ChatSocket {
           );
         } else if (messageData['action'] == WSActionEnum.seen.value) {
           final sender = messageData['data']['sender'];
-          if (sender == 1) {
+          if (sender == 0) {
             _wsEventStreamController.sink.add(
               WebSocketModel<ChatMessageSocket>(
                 action: WSActionEnum.seen,
                 data: const ChatMessageSocket(
-                  sender: SenderEnum.admin,
+                  sender: SenderEnum.user,
                 ),
               ),
             );
-            logger.d('ChatService => Admin read message');
+            logger.d('ChatService => User read message');
           }
         } else {
           logger.d('ChatService => Unknown message: $message');
@@ -139,7 +144,7 @@ class ChatSocket {
       action: WSActionEnum.sendChatMessage,
       data: ChatMessageSocket(
         message: message,
-        sender: SenderEnum.user,
+        sender: SenderEnum.admin,
       ),
     );
     await add(jsonEncode(chatMessage.toJson((value) => value)));
@@ -155,7 +160,7 @@ class ChatSocket {
         WebSocketModel<ChatMessageSocket>(
       action: WSActionEnum.seen,
       data: const ChatMessageSocket(
-        sender: SenderEnum.user,
+        sender: SenderEnum.admin,
       ),
     );
     await add(jsonEncode(chatMessage.toJson((value) => value)));

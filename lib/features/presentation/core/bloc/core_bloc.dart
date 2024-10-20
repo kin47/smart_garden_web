@@ -6,6 +6,7 @@ import 'package:smart_garden/base/bloc/index.dart';
 import 'package:smart_garden/base/network/errors/extension.dart';
 import 'package:smart_garden/features/domain/enum/core_tab.dart';
 import 'package:smart_garden/features/domain/repository/auth_repository.dart';
+import 'package:smart_garden/features/domain/repository/chat_repository.dart';
 
 part 'core_event.dart';
 
@@ -17,7 +18,7 @@ part 'core_bloc.g.dart';
 
 @injectable
 class CoreBloc extends BaseBloc<CoreEvent, CoreState> {
-  CoreBloc(this._authRepository)
+  CoreBloc(this._authRepository, this._chatRepository)
       : super(CoreState.init()) {
     on<CoreEvent>((event, emit) async {
       await event.when(
@@ -29,6 +30,7 @@ class CoreBloc extends BaseBloc<CoreEvent, CoreState> {
   }
 
   final AuthRepository _authRepository;
+  final ChatRepository _chatRepository;
 
   onInit(Emitter<CoreState> emit) async {
 
@@ -60,5 +62,11 @@ class CoreBloc extends BaseBloc<CoreEvent, CoreState> {
         ),
       ),
     );
+  }
+
+  @override
+  Future<void> close() async {
+    await _chatRepository.disconnectChat();
+    return super.close();
   }
 }
