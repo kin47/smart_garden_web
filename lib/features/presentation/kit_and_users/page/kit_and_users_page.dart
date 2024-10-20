@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:smart_garden/base/base_widget.dart';
+import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/features/domain/entity/kit_entity.dart';
 import 'package:smart_garden/features/domain/entity/user_entity.dart';
@@ -25,10 +26,37 @@ class KitAndUsersPage extends StatefulWidget {
 class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
     KitAndUsersState, KitAndUsersBloc> {
   @override
+  void initState() {
+    super.initState();
+    bloc.usersInKitPagingController.addPageRequestListener((pageKey) {
+      bloc.add(KitAndUsersEvent.getUsersInKit(
+        kit: widget.kit,
+        page: pageKey,
+      ));
+    });
+  }
+
+  @override
+  void listener(BuildContext context, KitAndUsersState state) {
+    super.listener(context, state);
+    switch (state.status) {
+      case BaseStateStatus.failed:
+        DialogService.showInformationDialog(
+          context,
+          title: 'error'.tr(),
+          description: state.message ?? 'error_system'.tr(),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  @override
   Widget renderUI(BuildContext context) {
     return BaseScaffold(
       appBar: BaseAppBar(
-        title: 'widget.kit.name',
+        title: widget.kit.name,
       ),
       body: SingleChildScrollView(
         child: ResponsiveRowColumn(
@@ -78,11 +106,10 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
                       style: AppTextStyles.s20w700,
                     ),
                     SizedBox(height: 16.h),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return Container(
+                    Expanded(
+                      child: CustomListViewSeparated<UserEntity>(
+                        controller: bloc.usersInKitPagingController,
+                        builder: (context, user, index) => Container(
                           decoration: BoxDecoration(
                             color: index % 2 == 0
                                 ? AppColors.white
@@ -90,13 +117,13 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
                           ),
                           child: ListTile(
                             title: Text(
-                              'User $index',
+                              user.name,
                               style: AppTextStyles.s16w500.copyWith(
                                 color: AppColors.black,
                               ),
                             ),
                             subtitle: Text(
-                              'user_email'.tr(),
+                              user.email,
                               style: AppTextStyles.s14w400.copyWith(
                                 color: AppColors.black,
                               ),
@@ -107,16 +134,18 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
                                 color: AppColors.red,
                               ),
                               onPressed: () {
-                                // bloc.add(
-                                //   KitAndUsersEvent.removeUserFromKit(
-                                //     user: user,
-                                //   ),
-                                // );
+                                bloc.add(
+                                  KitAndUsersEvent.removeUserFromKit(
+                                    user: user,
+                                  ),
+                                );
                               },
                             ),
                           ),
-                        );
-                      },
+                        ),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox.shrink(),
+                      ),
                     ),
                   ],
                 ),

@@ -6,8 +6,10 @@ import 'package:smart_garden/base/network/errors/error.dart';
 import 'package:smart_garden/base/network/errors/extension.dart';
 import 'package:smart_garden/features/data/datasource/remote/kit_service/kit_service.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
+import 'package:smart_garden/features/data/request/user_and_kit_request/user_and_kit_request.dart';
 import 'package:smart_garden/features/domain/entity/base_pagination_response_entity.dart';
 import 'package:smart_garden/features/domain/entity/kit_entity.dart';
+import 'package:smart_garden/features/domain/entity/user_entity.dart';
 import 'package:smart_garden/features/domain/repository/kit_repository.dart';
 
 @Injectable(as: KitRepository)
@@ -32,6 +34,38 @@ class KitRepositoryImpl implements KitRepository {
           totalData: res.totalCount ?? 0,
         ),
       );
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
+  Future<Either<BaseError, List<UserEntity>>> getUsersInKit({
+    required int kitId,
+    required PaginationRequest request,
+  }) async {
+    try {
+      final res = await _service.getUsersInKit(kitId: kitId, request: request);
+      if (res.data == null) {
+        return left(BaseError.httpUnknownError('error_system'.tr()));
+      }
+      return right(res.data!.map((e) => UserEntity.fromModel(e)).toList());
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
+  Future<Either<BaseError, bool>> deleteUserFromKit({
+    required int kitId,
+    required int userId,
+  }) async {
+    try {
+      await _service.deleteUserFromKit(
+        kitId: kitId,
+        request: UserAndKitRequest(userId: userId),
+      );
+      return right(true);
     } on DioException catch (e) {
       return left(e.baseError);
     }
