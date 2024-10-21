@@ -7,6 +7,14 @@ class KitAndUsersEvent with _$KitAndUsersEvent {
     required int page,
   }) = _GetUsersInKit;
 
+  const factory KitAndUsersEvent.searchUser({
+    required String searchKey,
+  }) = SearchUserForKit;
+
+  const factory KitAndUsersEvent.getUsersFromSearch({
+    required int page,
+  }) = _GetUsersFromSearch;
+
   const factory KitAndUsersEvent.addUserToKit({
     required UserEntity user,
   }) = _AddUserToKit;

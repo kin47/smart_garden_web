@@ -6,7 +6,7 @@ import 'package:smart_garden/features/domain/entity/kit_entity.dart';
 import 'package:smart_garden/features/domain/entity/user_entity.dart';
 
 abstract class KitRepository {
-  Future<Either<BaseError, BasePaginationResponseEntity<KitEntity>>> getUsers({
+  Future<Either<BaseError, BasePaginationResponseEntity<KitEntity>>> getKits({
     required PaginationRequest request,
   });
 
@@ -15,7 +15,16 @@ abstract class KitRepository {
     required PaginationRequest request,
   });
 
+  Future<Either<BaseError, List<UserEntity>>> searchUserForKit({
+    required PaginationRequest request,
+  });
+
   Future<Either<BaseError, bool>> deleteUserFromKit({
+    required int kitId,
+    required int userId,
+  });
+
+  Future<Either<BaseError, bool>> addUserToKit({
     required int kitId,
     required int userId,
   });

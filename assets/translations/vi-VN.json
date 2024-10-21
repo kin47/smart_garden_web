@@ -104,5 +104,6 @@
   "chat_no_history": "Không có lịch sử chat",
   "chat_hint": "Nhập tin nhắn...",
   "yesterday": "Hôm qua",
-  "today": "Hôm nay"
+  "today": "Hôm nay",
+  "confirm_delete_user_from_kit": "Bạn có chắc chắn muốn xóa người dùng khỏi kit?"
 }

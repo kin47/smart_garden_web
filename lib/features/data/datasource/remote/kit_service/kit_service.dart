@@ -32,4 +32,15 @@ abstract class KitService {
     @Path('kitId') required int kitId,
     @Body() required UserAndKitRequest request,
   });
+
+  @GET(EndpointConstants.searchUserForKit)
+  Future<BaseListData<UserModel>> searchUserForKit({
+    @Queries() required PaginationRequest request,
+  });
+
+  @POST(EndpointConstants.addUserToKit)
+  Future<BaseData> addUserToKit({
+    @Path('kitId') required int kitId,
+    @Body() required UserAndKitRequest request,
+  });
 }

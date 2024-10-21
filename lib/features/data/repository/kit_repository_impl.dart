@@ -19,7 +19,7 @@ class KitRepositoryImpl implements KitRepository {
   KitRepositoryImpl(this._service);
 
   @override
-  Future<Either<BaseError, BasePaginationResponseEntity<KitEntity>>> getUsers({
+  Future<Either<BaseError, BasePaginationResponseEntity<KitEntity>>> getKits({
     required PaginationRequest request,
   }) async {
     try {
@@ -62,6 +62,37 @@ class KitRepositoryImpl implements KitRepository {
   }) async {
     try {
       await _service.deleteUserFromKit(
+        kitId: kitId,
+        request: UserAndKitRequest(userId: userId),
+      );
+      return right(true);
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
+  Future<Either<BaseError, List<UserEntity>>> searchUserForKit({
+    required PaginationRequest request,
+  }) async {
+    try {
+      final res = await _service.searchUserForKit(request: request);
+      if (res.data == null) {
+        return left(BaseError.httpUnknownError('error_system'.tr()));
+      }
+      return right(res.data!.map((e) => UserEntity.fromModel(e)).toList());
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
+  Future<Either<BaseError, bool>> addUserToKit({
+    required int kitId,
+    required int userId,
+  }) async {
+    try {
+      await _service.addUserToKit(
         kitId: kitId,
         request: UserAndKitRequest(userId: userId),
       );

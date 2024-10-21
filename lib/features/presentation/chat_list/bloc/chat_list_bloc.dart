@@ -40,9 +40,7 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
       (event, emit) async {
         await _searchUser(emit, event.searchKey);
       },
-      transformer: (events, mapper) => events.debounceTime(
-        const Duration(milliseconds: 300),
-      ),
+      transformer: debounce(const Duration(milliseconds: 300)),
     );
   }
 

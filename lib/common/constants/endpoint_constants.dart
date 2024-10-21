@@ -22,6 +22,8 @@ class EndpointConstants {
 
   static const String kitManagement = '/admin/kit-management/';
   static const String usersInKit = '/admin/kit-management/user-in-kit/{kitId}';
+  static const String searchUserForKit = '/admin/kit-management/search-user';
+  static const String addUserToKit = '/admin/kit-management/add-user-to-kit/{kitId}';
 
   static const List<String> publicAPI = [
     login,

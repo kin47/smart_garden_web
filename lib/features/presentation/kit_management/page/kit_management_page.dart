@@ -245,7 +245,11 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
           Text(kit.password),
         ),
         DataCell(
-          Center(child: ActiveStatusCircle(isActive: kit.connected)),
+          Center(
+            child: ActiveStatusCircle(
+              isActive: kit.numberOfConnections > 0,
+            ),
+          ),
         ),
       ],
       onSelectChanged: (value) {

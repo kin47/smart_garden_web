@@ -34,6 +34,12 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
         page: pageKey,
       ));
     });
+
+    bloc.userSearchPagingController.addPageRequestListener((pageKey) {
+      bloc.add(KitAndUsersEvent.getUsersFromSearch(
+        page: pageKey,
+      ));
+    });
   }
 
   @override
@@ -75,152 +81,168 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
           rowSpacing: 16.w,
           columnSpacing: 16.h,
           children: [
-            ResponsiveRowColumnItem(
-              child: Container(
-                width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
-                    ? (1.sw - 32.w)
-                    : (0.5.sw - 24.w),
-                height: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
-                    ? null
-                    : (1.sh - 100.h),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 16.h,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(8.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black.withOpacity(0.1),
-                      blurRadius: 10.r,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'connected_users'.tr(),
-                      style: AppTextStyles.s20w700,
-                    ),
-                    SizedBox(height: 16.h),
-                    Expanded(
-                      child: CustomListViewSeparated<UserEntity>(
-                        controller: bloc.usersInKitPagingController,
-                        builder: (context, user, index) => Container(
-                          decoration: BoxDecoration(
-                            color: index % 2 == 0
-                                ? AppColors.white
-                                : AppColors.gray050,
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              user.name,
-                              style: AppTextStyles.s16w500.copyWith(
-                                color: AppColors.black,
-                              ),
-                            ),
-                            subtitle: Text(
-                              user.email,
-                              style: AppTextStyles.s14w400.copyWith(
-                                color: AppColors.black,
-                              ),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: AppColors.red,
-                              ),
-                              onPressed: () {
-                                bloc.add(
-                                  KitAndUsersEvent.removeUserFromKit(
-                                    user: user,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        separatorBuilder: (context, index) =>
-                            const SizedBox.shrink(),
+            _buildUsersInKitSection(context),
+            _buildSearchUserForKitSection(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ResponsiveRowColumnItem _buildSearchUserForKitSection(BuildContext context) {
+    return ResponsiveRowColumnItem(
+      child: Container(
+        width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+            ? (1.sw - 32.w)
+            : (0.5.sw - 24.w),
+        height: 1.sh - 100.h,
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(8.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.black.withOpacity(0.1),
+              blurRadius: 10.r,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            BaseSearchTextField(
+              hintText: 'user_search_hint'.tr(),
+              onChanged: (value) {
+                bloc.add(
+                  KitAndUsersEvent.searchUser(
+                    searchKey: value,
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 16.h),
+            Expanded(
+              child: CustomListViewSeparated<UserEntity>(
+                controller: bloc.userSearchPagingController,
+                builder: (context, user, index) => Container(
+                  decoration: BoxDecoration(
+                    color: index % 2 == 0 ? AppColors.white : AppColors.gray050,
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      user.name,
+                      style: AppTextStyles.s16w500.copyWith(
+                        color: AppColors.black,
                       ),
                     ),
-                  ],
+                    subtitle: Text(
+                      user.email,
+                      style: AppTextStyles.s14w400.copyWith(
+                        color: AppColors.black,
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.add,
+                        color: AppColors.green,
+                      ),
+                      onPressed: () {
+                        bloc.add(
+                          KitAndUsersEvent.addUserToKit(
+                            user: user,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
+                separatorBuilder: (context, index) => const SizedBox.shrink(),
               ),
             ),
-            ResponsiveRowColumnItem(
-              child: Container(
-                width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
-                    ? (1.sw - 32.w)
-                    : (0.5.sw - 24.w),
-                height: 1.sh - 100.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 16.h,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(8.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black.withOpacity(0.1),
-                      blurRadius: 10.r,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    BaseSearchTextField(
-                      hintText: 'user_search_hint'.tr(),
-                      onChanged: (value) {},
-                    ),
-                    SizedBox(height: 16.h),
-                    Expanded(
-                      child: CustomListViewSeparated<UserEntity>(
-                        controller: bloc.userSearchPagingController,
-                        builder: (context, user, index) => Container(
-                          decoration: BoxDecoration(
-                            color: index % 2 == 0
-                                ? AppColors.white
-                                : AppColors.gray050,
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              'User $index',
-                              style: AppTextStyles.s16w500.copyWith(
-                                color: AppColors.black,
-                              ),
-                            ),
-                            subtitle: Text(
-                              'user_email'.tr(),
-                              style: AppTextStyles.s14w400.copyWith(
-                                color: AppColors.black,
-                              ),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(
-                                Icons.add,
-                                color: AppColors.red,
-                              ),
-                              onPressed: () {
-                                bloc.add(
-                                  KitAndUsersEvent.addUserToKit(
-                                    user: user,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        separatorBuilder: (context, index) => const Divider(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ResponsiveRowColumnItem _buildUsersInKitSection(BuildContext context) {
+    return ResponsiveRowColumnItem(
+      child: Container(
+        width: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+            ? (1.sw - 32.w)
+            : (0.5.sw - 24.w),
+        height: ResponsiveBreakpoints.of(context).smallerThan(DESKTOP)
+            ? null
+            : (1.sh - 100.h),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+          vertical: 16.h,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(8.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.black.withOpacity(0.1),
+              blurRadius: 10.r,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'connected_users'.tr(),
+              style: AppTextStyles.s20w700,
+            ),
+            SizedBox(height: 16.h),
+            Expanded(
+              child: CustomListViewSeparated<UserEntity>(
+                controller: bloc.usersInKitPagingController,
+                builder: (context, user, index) => Container(
+                  decoration: BoxDecoration(
+                    color: index % 2 == 0 ? AppColors.white : AppColors.gray050,
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      user.name,
+                      style: AppTextStyles.s16w500.copyWith(
+                        color: AppColors.black,
                       ),
                     ),
-                  ],
+                    subtitle: Text(
+                      user.email,
+                      style: AppTextStyles.s14w400.copyWith(
+                        color: AppColors.black,
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: AppColors.red,
+                      ),
+                      onPressed: () {
+                        DialogService.showActionDialog(
+                          context,
+                          description: 'confirm_delete_user_from_kit'.tr(),
+                          leftButtonText: 'close'.tr(),
+                          onPressedRightButton: () {
+                            bloc.add(
+                              KitAndUsersEvent.removeUserFromKit(
+                                user: user,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
                 ),
+                separatorBuilder: (context, index) => const SizedBox.shrink(),
               ),
             ),
           ],

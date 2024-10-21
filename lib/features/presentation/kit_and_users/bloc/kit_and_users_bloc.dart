@@ -22,13 +22,23 @@ part 'kit_and_users_bloc.g.dart';
 class KitAndUsersBloc extends BaseBloc<KitAndUsersEvent, KitAndUsersState>
     with BaseCommonMethodMixin {
   KitAndUsersBloc(this._kitRepository) : super(KitAndUsersState.initial()) {
-    on<KitAndUsersEvent>((event, emit) async {
-      await event.when(
-        getUsersInKit: (kit, page) => _getUsersInKit(emit, kit, page),
-        addUserToKit: (user) => _addUserToKit(emit, user),
-        removeUserFromKit: (user) => _removeUserFromKit(emit, user),
-      );
-    });
+    on<KitAndUsersEvent>(
+      (event, emit) async {
+        await event.when(
+          getUsersInKit: (kit, page) => _getUsersInKit(emit, kit, page),
+          addUserToKit: (user) => _addUserToKit(emit, user),
+          removeUserFromKit: (user) => _removeUserFromKit(emit, user),
+          searchUser: (searchKey) {},
+          getUsersFromSearch: (page) => _getUsersFromSearch(emit, page),
+        );
+      },
+    );
+    on<SearchUserForKit>(
+      (event, emit) async {
+        await _searchUser(emit, event.searchKey);
+      },
+      transformer: debounce(const Duration(milliseconds: 300)),
+    );
   }
 
   final KitRepository _kitRepository;
@@ -78,7 +88,77 @@ class KitAndUsersBloc extends BaseBloc<KitAndUsersEvent, KitAndUsersState>
     );
   }
 
-  Future _addUserToKit(Emitter<KitAndUsersState> emit, UserEntity user) async {}
+  Future _searchUser(Emitter<KitAndUsersState> emit, String searchKey) async {
+    emit(
+      state.copyWith(
+        searchKey: searchKey,
+      ),
+    );
+    userSearchPagingController.refresh();
+  }
+
+  Future _getUsersFromSearch(Emitter<KitAndUsersState> emit, int page) async {
+    final res = await _kitRepository.searchUserForKit(
+      request: PaginationRequest(
+        page: page,
+        searchKey: state.searchKey,
+      ),
+    );
+    pagingControllerOnLoad<UserEntity>(
+      page,
+      userSearchPagingController,
+      res,
+      onError: (String message) {
+        emit(
+          state.copyWith(
+            status: BaseStateStatus.failed,
+            message: message,
+          ),
+        );
+      },
+      onSuccess: (r) {
+        emit(
+          state.copyWith(
+            searchedUsers: state.searchedUsers + r,
+            status: BaseStateStatus.idle,
+          ),
+        );
+      },
+    );
+  }
+
+  Future _addUserToKit(Emitter<KitAndUsersState> emit, UserEntity user) async {
+    emit(
+      state.copyWith(
+        status: BaseStateStatus.loading,
+      ),
+    );
+
+    final res = await _kitRepository.addUserToKit(
+      kitId: state.kit!.id,
+      userId: user.id,
+    );
+    res.fold(
+      (l) {
+        emit(
+          state.copyWith(
+            status: BaseStateStatus.failed,
+            message: l.getError,
+          ),
+        );
+      },
+      (r) {
+        emit(
+          state.copyWith(
+            connectedUsers: state.connectedUsers + [user],
+            status: BaseStateStatus.idle,
+          ),
+        );
+        usersInKitPagingController.refresh();
+        userSearchPagingController.refresh();
+      },
+    );
+  }
 
   Future _removeUserFromKit(
     Emitter<KitAndUsersState> emit,
@@ -113,6 +193,7 @@ class KitAndUsersBloc extends BaseBloc<KitAndUsersEvent, KitAndUsersState>
           ),
         );
         usersInKitPagingController.refresh();
+        userSearchPagingController.refresh();
       },
     );
   }

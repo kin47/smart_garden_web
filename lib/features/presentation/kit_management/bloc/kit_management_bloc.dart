@@ -57,7 +57,7 @@ class KitManagementBloc extends BaseBloc<KitManagementEvent, KitManagementState>
       ),
     );
 
-    final res = await _repository.getUsers(
+    final res = await _repository.getKits(
       request: PaginationRequest(
         page: page ?? 1,
         searchKey: searchKey ?? state.searchKey,
