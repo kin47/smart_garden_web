@@ -58,9 +58,5 @@ class ChatPersonEntity extends Equatable {
     userId,
     userAvatar,
     username,
-    lastMessage,
-    lastMessageTime,
-    sender,
-    unreadMessageCount,
   ];
 }

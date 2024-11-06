@@ -10,6 +10,10 @@ abstract class UserRepository {
     required PaginationRequest request,
   });
 
+  Future<Either<BaseError, UserEntity>> getUserInfo({
+    required int userId,
+  });
+
   Future<Either<BaseError, bool>> updateUser({
     required int userId,
     required UpdateUserInformationRequest requestBody,

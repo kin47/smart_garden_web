@@ -1,11 +1,17 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:smart_garden/base/base_widget.dart';
+import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
+import 'package:smart_garden/di/di_setup.dart';
 import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
+import 'package:smart_garden/features/domain/events/event_bus_event.dart';
 import 'package:smart_garden/features/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:smart_garden/features/presentation/chat_list/widget/chat_person_item.dart';
 import 'package:smart_garden/routes/app_pages.gr.dart';
@@ -21,6 +27,7 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
     ChatListState, ChatListBloc> {
   TabsRouter? _tabsRouter;
+  late StreamSubscription _refreshChatListSubscription;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -29,12 +36,34 @@ class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
     bloc.pagingController.addPageRequestListener((pageKey) {
       bloc.add(ChatListEvent.getChatList(page: pageKey));
     });
+    _refreshChatListSubscription =
+        getIt<EventBus>().on<RefreshChatListEvent>().listen((event) {
+      bloc.pagingController.refresh();
+    });
   }
 
   @override
   void dispose() {
     bloc.pagingController.dispose();
+    _searchController.dispose();
+    _refreshChatListSubscription.cancel();
     super.dispose();
+  }
+
+  @override
+  void listener(BuildContext context, ChatListState state) {
+    super.listener(context, state);
+    switch (state.status) {
+      case BaseStateStatus.failed:
+        DialogService.showInformationDialog(
+          context,
+          title: 'error'.tr(),
+          description: state.message,
+        );
+        break;
+      default:
+        break;
+    }
   }
 
   @override

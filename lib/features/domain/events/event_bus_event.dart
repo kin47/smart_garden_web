@@ -11,3 +11,7 @@ class ChangeCoreTabEvent {
     this.tab,
   );
 }
+
+class RefreshChatListEvent {
+  const RefreshChatListEvent();
+}

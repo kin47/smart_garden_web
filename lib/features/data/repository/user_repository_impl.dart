@@ -39,6 +39,21 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<Either<BaseError, UserEntity>> getUserInfo({
+    required int userId,
+  }) async {
+    try {
+      final res = await _service.getUserInfo(userId: userId);
+      if (res.data == null) {
+        return left(BaseError.httpUnknownError('error_system'.tr()));
+      }
+      return right(UserEntity.fromModel(res.data!));
+    } on DioException catch (e) {
+      return left(e.baseError);
+    }
+  }
+
+  @override
   Future<Either<BaseError, bool>> updateUser({
     required int userId,
     required UpdateUserInformationRequest requestBody,

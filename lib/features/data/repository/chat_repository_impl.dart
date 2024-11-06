@@ -59,9 +59,11 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<bool> readMessage() async {
+  Future<bool> readMessage({
+    required int userId,
+  }) async {
     try {
-      final res = await _chatSocket.readMessage();
+      final res = await _chatSocket.readMessage(userId);
       return res;
     } catch (e) {
       return false;
@@ -71,9 +73,10 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<bool> sendMessage({
     required String message,
+    required int userId,
   }) async {
     try {
-      final res = await _chatSocket.sendMessage(message);
+      final res = await _chatSocket.sendMessage(message, userId);
       return res;
     } catch (e) {
       return false;
@@ -95,8 +98,10 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Stream<WebSocketModel<ChatMessageSocket>> wsMessageStream() async* {
-    yield* _chatSocket.wsEventStream.asyncExpand(
+  Stream<WebSocketModel<ChatMessageSocket>> wsMessageStream({
+    required int userId,
+  }) async* {
+    yield* _chatSocket.wsEventStream(userId).asyncExpand(
       (event) async* {
         switch (event.action) {
           case WSActionEnum.sendChatMessage:

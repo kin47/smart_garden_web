@@ -37,12 +37,16 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
   @override
   void listener(BuildContext context, KitManagementState state) {
     super.listener(context, state);
-    if (state.status == BaseStateStatus.failed) {
-      DialogService.showInformationDialog(
-        context,
-        title: 'error'.tr(),
-        description: state.message,
-      );
+    switch (state.status) {
+      case BaseStateStatus.failed:
+        DialogService.showInformationDialog(
+          context,
+          title: 'error'.tr(),
+          description: state.message,
+        );
+        break;
+      default:
+        break;
     }
   }
 

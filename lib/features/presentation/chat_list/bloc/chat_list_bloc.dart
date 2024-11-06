@@ -10,6 +10,7 @@ import 'package:smart_garden/base/bloc/base_bloc.dart';
 import 'package:smart_garden/base/bloc/base_bloc_state.dart';
 import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
+import 'package:smart_garden/features/data/request/connect_ws_request/connect_ws_request.dart';
 import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
 import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
@@ -49,6 +50,15 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
   final PagingController<int, ChatPersonEntity> pagingController =
       PagingController(firstPageKey: 1);
 
+  _initializeChat(List<ChatPersonEntity> chatPersons) {
+    // Initialize chat connection for all users in the list
+    for (final chatPerson in chatPersons) {
+      _chatRepository.chatInitialize(
+        connectRequest: ConnectWSRequest(userId: chatPerson.userId),
+      );
+    }
+  }
+
   Future _searchUser(Emitter<ChatListState> emit, String searchKey) async {
     emit(
       state.copyWith(
@@ -63,14 +73,6 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     String? searchKey,
     int page,
   ) async {
-    if (page == 1) {
-      emit(
-        state.copyWith(
-          status: BaseStateStatus.loading,
-        ),
-      );
-    }
-
     final res = await _chatRepository.getChatList(
       request: PaginationRequest(
         page: page,
@@ -96,6 +98,7 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
             status: BaseStateStatus.idle,
           ),
         );
+        _initializeChat(r);
       },
     );
   }
@@ -110,5 +113,11 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
         selectedChatPerson: chatPerson,
       ),
     );
+  }
+
+  @override
+  Future<void> close() async {
+    await _chatRepository.disconnectChat();
+    return super.close();
   }
 }

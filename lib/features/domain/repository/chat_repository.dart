@@ -17,15 +17,18 @@ abstract class ChatRepository {
     required PaginationRequest request,
   });
 
-  Future<bool> readMessage();
+  Future<bool> readMessage({required int userId});
 
   Future<bool> sendMessage({
     required String message,
+    required int userId,
   });
 
   void chatInitialize({required ConnectWSRequest connectRequest});
 
   Future<void> disconnectChat();
 
-  Stream<WebSocketModel<ChatMessageSocket>> wsMessageStream();
+  Stream<WebSocketModel<ChatMessageSocket>> wsMessageStream({
+    required int userId,
+  });
 }

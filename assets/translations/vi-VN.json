@@ -105,5 +105,7 @@
   "chat_hint": "Nhập tin nhắn...",
   "yesterday": "Hôm qua",
   "today": "Hôm nay",
-  "confirm_delete_user_from_kit": "Bạn có chắc chắn muốn xóa người dùng khỏi kit?"
+  "confirm_delete_user_from_kit": "Bạn có chắc chắn muốn xóa người dùng khỏi kit?",
+  "user": "Người dùng",
+  "you": "Bạn"
 }

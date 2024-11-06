@@ -20,6 +20,11 @@ abstract class UserService {
     @Queries() required PaginationRequest request,
   });
 
+  @GET(EndpointConstants.getUserInfo)
+  Future<BaseData<UserModel>> getUserInfo({
+    @Path('userId') required int userId,
+  });
+
   @PUT(EndpointConstants.updateUserInfo)
   Future<BaseData> updateUser({
     @Path('userId') required int userId,

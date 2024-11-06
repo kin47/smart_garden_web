@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -6,6 +7,7 @@ import 'package:smart_garden/common/app_theme/app_text_styles.dart';
 import 'package:smart_garden/common/utils/date_time/date_time_utils.dart';
 import 'package:smart_garden/common/widgets/cache_image_widget.dart';
 import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
+import 'package:smart_garden/features/domain/enum/sender_enum.dart';
 import 'package:smart_garden/gen/assets.gen.dart';
 
 class ChatPersonItem extends StatelessWidget {
@@ -63,7 +65,7 @@ class ChatPersonItem extends StatelessWidget {
                     Visibility(
                       visible: chatPerson.lastMessage != null,
                       child: Text(
-                        (chatPerson.lastMessage ?? '' "\n"),
+                        displayLastMessage(chatPerson),
                         style: AppTextStyles.s14w400.copyWith(
                           color: AppColors.gray500,
                         ),
@@ -114,6 +116,13 @@ class ChatPersonItem extends StatelessWidget {
       ),
     );
   }
+}
+
+String displayLastMessage(ChatPersonEntity chatPerson) {
+  if (chatPerson.sender == SenderEnum.admin) {
+    return '${'you'.tr()}: ${chatPerson.lastMessage ?? '' "\n"}';
+  }
+  return chatPerson.lastMessage ?? '' "\n";
 }
 
 String getChatTime(DateTime? time) {

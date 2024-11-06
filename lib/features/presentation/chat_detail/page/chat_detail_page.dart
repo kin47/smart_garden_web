@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:smart_garden/base/base_widget.dart';
+import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/extensions/datetime_extension.dart';
 import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/common/utils/date_time/date_time_utils.dart';
@@ -57,11 +58,30 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
   }
 
   @override
+  void listener(BuildContext context, ChatDetailState state) {
+    super.listener(context, state);
+    switch (state.status) {
+      case BaseStateStatus.failed:
+        DialogService.showInformationDialog(
+          context,
+          title: 'error'.tr(),
+          description: state.message,
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  @override
   Widget renderUI(BuildContext context) {
     return BaseScaffold(
-      appBar: const BaseAppBar(
-        hasBack: false,
-        title: "widget.username",
+      appBar: blocBuilder(
+        (context, state) => BaseAppBar(
+          hasBack: false,
+          title: state.user?.name ?? 'user'.tr(),
+        ),
+        buildWhen: (previous, current) => previous.user != current.user,
       ),
       body: Column(
         children: [

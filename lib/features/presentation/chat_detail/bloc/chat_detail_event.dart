@@ -6,6 +6,10 @@ class ChatDetailEvent with _$ChatDetailEvent {
     required int userId,
   }) = _Init;
 
+  const factory ChatDetailEvent.getUserInfo({
+    required int userId,
+  }) = _GetUserInfo;
+
   const factory ChatDetailEvent.readMessage() = _ReadMessage;
 
   const factory ChatDetailEvent.getChatMessages({

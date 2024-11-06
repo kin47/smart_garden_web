@@ -36,13 +36,16 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
   @override
   void listener(BuildContext context, UserManagementState state) {
     super.listener(context, state);
-    if (state.status == BaseStateStatus.failed) {
-      DialogService.showInformationDialog(
-        context,
-        key: const Key('store_error_dialog'),
-        title: 'error'.tr(),
-        description: state.message,
-      );
+    switch (state.status) {
+      case BaseStateStatus.failed:
+        DialogService.showInformationDialog(
+          context,
+          title: 'error'.tr(),
+          description: state.message,
+        );
+        break;
+      default:
+        break;
     }
   }
 

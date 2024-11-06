@@ -2,32 +2,44 @@ import 'dart:async';
 
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:injectable/injectable.dart';
 import 'package:smart_garden/base/bloc/index.dart';
+import 'package:smart_garden/base/network/errors/extension.dart';
 import 'package:smart_garden/common/mixins/paging_mixin.dart';
-import 'package:smart_garden/features/data/request/connect_ws_request/connect_ws_request.dart';
+import 'package:smart_garden/di/di_setup.dart';
 import 'package:smart_garden/features/data/request/get_chat_messages_request/get_chat_messages_request.dart';
 import 'package:smart_garden/features/domain/entity/chat_message_entity.dart';
+import 'package:smart_garden/features/domain/entity/user_entity.dart';
 import 'package:smart_garden/features/domain/enum/sender_enum.dart';
 import 'package:smart_garden/features/domain/enum/ws_action_enum.dart';
+import 'package:smart_garden/features/domain/events/event_bus_event.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
+import 'package:smart_garden/features/domain/repository/user_repository.dart';
 
 part 'chat_detail_event.dart';
+
 part 'chat_detail_state.dart';
+
 part 'chat_detail_bloc.freezed.dart';
+
 part 'chat_detail_bloc.g.dart';
 
 @injectable
 class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
     with BaseCommonMethodMixin {
-  ChatDetailBloc(this._chatRepository) : super(ChatDetailState.init()) {
+  ChatDetailBloc(
+    this._chatRepository,
+    this._userRepository,
+  ) : super(ChatDetailState.init()) {
     on<ChatDetailEvent>((event, emit) async {
       await event.when(
         init: (userId) => _init(emit, userId),
+        getUserInfo: (userId) => _getUserInfo(emit, userId),
         readMessage: () => _readMessage(emit),
         getChatMessages: (page, lastMessageId, userId) =>
             _getChatMessages(emit, page, lastMessageId, userId),
@@ -39,6 +51,7 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
   }
 
   final ChatRepository _chatRepository;
+  final UserRepository _userRepository;
   late final StreamSubscription wsMessageStream;
   final TextEditingController chatTextController = TextEditingController();
 
@@ -46,12 +59,8 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
       PagingController(firstPageKey: 1);
 
   Future _init(Emitter<ChatDetailState> emit, int userId) async {
-    _chatRepository.chatInitialize(
-      connectRequest: ConnectWSRequest(
-        userId: userId,
-      ),
-    );
-    wsMessageStream = _chatRepository.wsMessageStream().listen(
+    add(ChatDetailEvent.getUserInfo(userId: userId));
+    wsMessageStream = _chatRepository.wsMessageStream(userId: userId).listen(
       (event) async {
         switch (event.action) {
           case WSActionEnum.sendChatMessage:
@@ -68,14 +77,17 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
               add(ChatDetailEvent.updateLastSeenMessageIndex(
                   state.lastSeenMessageIndex! + 1));
             }
+            if (event.data?.sender == SenderEnum.admin) {
+              add(const ChatDetailEvent.readMessage());
+            }
+            getIt<EventBus>().fire(const RefreshChatListEvent());
             break;
           case WSActionEnum.seen:
             int index = -1;
             for (int i = 0; i < (pagingController.itemList?.length ?? 0); i++) {
               final item = pagingController.itemList![i];
               if (index == -1 && item.sender == SenderEnum.user) {
-                pagingController.itemList![i] =
-                    item.copyWith(isUserRead: true);
+                pagingController.itemList![i] = item.copyWith(isUserRead: true);
                 index = i;
                 add(ChatDetailEvent.updateLastSeenMessageIndex(i));
                 break;
@@ -90,9 +102,27 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
     add(const ChatDetailEvent.readMessage());
   }
 
+  Future _getUserInfo(Emitter<ChatDetailState> emit, int userId) async {
+    final res = await _userRepository.getUserInfo(userId: userId);
+    res.fold(
+      (l) => emit(
+        state.copyWith(
+          status: BaseStateStatus.failed,
+          message: l.getError,
+        ),
+      ),
+      (r) => emit(
+        state.copyWith(
+          status: BaseStateStatus.idle,
+          user: r,
+        ),
+      ),
+    );
+  }
+
   Future _readMessage(Emitter<ChatDetailState> emit) async {
     emit(state.copyWith(status: BaseStateStatus.idle));
-    final res = await _chatRepository.readMessage();
+    final res = await _chatRepository.readMessage(userId: state.user?.id ?? 0);
     if (res) {
       emit(
         state.copyWith(
@@ -147,6 +177,7 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
     emit(state.copyWith(status: BaseStateStatus.idle));
     final res = await _chatRepository.sendMessage(
       message: message,
+      userId: state.user?.id ?? 0,
     );
     if (res) {
       emit(
