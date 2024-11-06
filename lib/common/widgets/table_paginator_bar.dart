@@ -24,10 +24,10 @@ class TablePaginatorBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _pages = [];
+    List<Widget> pages = [];
     if (totalPage <= 3) {
       for (int page = 1; page <= totalPage; page++) {
-        _pages.add(
+        pages.add(
           _Button(
             title: '$page',
             selected: page == currentPage,
@@ -38,12 +38,12 @@ class TablePaginatorBar extends StatelessWidget {
                   },
           ),
         );
-        _pages.add(SizedBox(width: 4.w));
+        pages.add(SizedBox(width: 4.w));
       }
-      _pages.removeLast();
+      pages.removeLast();
     } else {
       if (currentPage == 1) {
-        _pages.addAll([
+        pages.addAll([
           _Button(
             title: '$currentPage',
             selected: true,
@@ -63,11 +63,11 @@ class TablePaginatorBar extends StatelessWidget {
             },
           ),
           SizedBox(width: 4.w),
-          _Button(title: '...'),
+          const _Button(title: '...'),
         ]);
       } else if (currentPage == totalPage) {
-        _pages.addAll([
-          _Button(title: '...'),
+        pages.addAll([
+          const _Button(title: '...'),
           SizedBox(width: 4.w),
           _Button(
             title: '${currentPage - 2}',
@@ -89,7 +89,7 @@ class TablePaginatorBar extends StatelessWidget {
           ),
         ]);
       } else {
-        _pages.addAll([
+        pages.addAll([
           _Button(
             title: '${currentPage - 1}',
             onTap: () {
@@ -111,15 +111,15 @@ class TablePaginatorBar extends StatelessWidget {
         ]);
 
         if (currentPage + 2 <= totalPage) {
-          _pages.addAll([
+          pages.addAll([
             SizedBox(width: 4.w),
-            _Button(title: '...'),
+            const _Button(title: '...'),
           ]);
         }
 
         if (currentPage - 2 > 0) {
-          _pages.insertAll(0, [
-            _Button(title: '...'),
+          pages.insertAll(0, [
+            const _Button(title: '...'),
             SizedBox(width: 4.w),
           ]);
         }
@@ -157,7 +157,7 @@ class TablePaginatorBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
-            children: _pages,
+            children: pages,
           ),
           const SizedBox(width: 6.0),
           if (currentPage != totalPage)

@@ -287,8 +287,4 @@ class _LoginPageState
   void _login() {
     bloc.add(const LoginEvent.login());
   }
-
-  void _navigateToSignUp() {
-    context.replaceRoute(const RegisterRoute());
-  }
 }

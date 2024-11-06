@@ -1,7 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:intl/intl.dart';
 import 'package:smart_garden/common/extensions/datetime_extension.dart';
 
 enum Pattern {
