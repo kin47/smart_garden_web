@@ -12,6 +12,7 @@ import 'package:smart_garden/features/domain/enum/core_tab.dart';
 import 'package:smart_garden/features/domain/events/event_bus_event.dart';
 import 'package:smart_garden/features/presentation/core/bloc/core_bloc.dart';
 import 'package:smart_garden/routes/app_pages.gr.dart';
+import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class CorePage extends StatefulWidget {
@@ -57,6 +58,7 @@ class _CorePageState
 
   @override
   Widget renderUI(BuildContext context) {
+    html.document.title = 'home'.tr();
     return BaseScaffold(
       body: Row(
         children: [

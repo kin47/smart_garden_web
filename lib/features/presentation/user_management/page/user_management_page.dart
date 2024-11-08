@@ -14,6 +14,7 @@ import 'package:smart_garden/features/domain/enum/user_order_by_type.dart';
 import 'package:smart_garden/features/presentation/user_management/bloc/user_management_bloc.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:smart_garden/features/presentation/user_management/widget/user_information_dialog.dart';
+import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class UserManagementPage extends StatefulWidget {
@@ -51,6 +52,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
 
   @override
   Widget renderUI(BuildContext context) {
+    html.document.title = 'user_management'.tr();
     return BaseScaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(

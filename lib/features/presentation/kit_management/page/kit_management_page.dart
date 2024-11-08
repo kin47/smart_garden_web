@@ -15,6 +15,7 @@ import 'package:smart_garden/features/domain/enum/kit_order_by_type.dart';
 import 'package:smart_garden/features/domain/enum/sort_type.dart';
 import 'package:smart_garden/features/presentation/kit_management/bloc/kit_management_bloc.dart';
 import 'package:smart_garden/routes/app_pages.gr.dart';
+import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class KitManagementPage extends StatefulWidget {
@@ -52,6 +53,7 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
 
   @override
   Widget renderUI(BuildContext context) {
+    html.document.title = 'kit_management'.tr();
     return BaseScaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(

@@ -12,6 +12,7 @@ import 'package:smart_garden/common/widgets/textfields/app_text_form_field.dart'
 import 'package:smart_garden/features/presentation/login/bloc/login_bloc.dart';
 import 'package:smart_garden/gen/assets.gen.dart';
 import 'package:smart_garden/routes/app_pages.gr.dart';
+import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class LoginPage extends StatefulWidget {
@@ -70,6 +71,7 @@ class _LoginPageState
 
   @override
   Widget renderUI(BuildContext context) {
+    html.document.title = 'login'.tr();
     return BaseScaffold(
       hasBackgroundImage: true,
       backgroundImage: Assets.images.background.path,

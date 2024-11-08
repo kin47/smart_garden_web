@@ -15,6 +15,7 @@ import 'package:smart_garden/features/presentation/chat_detail/widget/user_messa
 import 'package:smart_garden/features/presentation/chat_detail/widget/chat_text_field.dart';
 import 'package:smart_garden/features/presentation/chat_detail/widget/admin_message_widget.dart';
 import 'package:smart_garden/gen/assets.gen.dart';
+import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class ChatDetailPage extends StatefulWidget {
@@ -75,6 +76,7 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
 
   @override
   Widget renderUI(BuildContext context) {
+    html.document.title = 'chat_list'.tr();
     return BaseScaffold(
       appBar: blocBuilder(
         (context, state) => BaseAppBar(

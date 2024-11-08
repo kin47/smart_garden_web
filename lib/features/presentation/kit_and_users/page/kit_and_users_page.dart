@@ -9,6 +9,7 @@ import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/features/domain/entity/kit_entity.dart';
 import 'package:smart_garden/features/domain/entity/user_entity.dart';
 import 'package:smart_garden/features/presentation/kit_and_users/bloc/kit_and_users_bloc.dart';
+import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class KitAndUsersPage extends StatefulWidget {
@@ -60,6 +61,7 @@ class _KitAndUsersPageState extends BaseState<KitAndUsersPage, KitAndUsersEvent,
 
   @override
   Widget renderUI(BuildContext context) {
+    html.document.title = widget.kit.name;
     return BaseScaffold(
       appBar: BaseAppBar(
         title: widget.kit.name,

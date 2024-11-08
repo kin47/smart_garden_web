@@ -15,6 +15,7 @@ import 'package:smart_garden/features/domain/events/event_bus_event.dart';
 import 'package:smart_garden/features/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:smart_garden/features/presentation/chat_list/widget/chat_person_item.dart';
 import 'package:smart_garden/routes/app_pages.gr.dart';
+import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class ChatListPage extends StatefulWidget {
@@ -68,6 +69,7 @@ class _ChatListPageState extends BaseState<ChatListPage, ChatListEvent,
 
   @override
   Widget renderUI(BuildContext context) {
+    html.document.title = 'chat_list'.tr();
     return BaseScaffold(
       body: Row(
         children: [
