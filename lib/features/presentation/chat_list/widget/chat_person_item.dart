@@ -37,8 +37,7 @@ class ChatPersonItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CachedImageWidget(
-              url:
-                  "https://w7.pngwing.com/pngs/895/199/png-transparent-spider-man-heroes-download-with-transparent-background-free-thumbnail.png",
+              url: chatPerson.userAvatar ?? '',
               width: 50,
               height: 50,
               radius: 25,

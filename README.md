@@ -18,6 +18,9 @@ Flutter Web
 ```firebase init hosting```
 ```firebase deploy```
 
+#### Command to avoid CORS Error
+```flutter run -d chrome --web-renderer html```
+
 #### Note:
 - Cần cài đặt firebase-tools
 - Khi deploy không dùng BASE_URL mà set string cứng
