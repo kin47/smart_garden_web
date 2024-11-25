@@ -34,5 +34,28 @@
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
+<script>
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBWTrBuTBn56lXWa3JQU1j5YvqFcRwtQzY",
+  authDomain: "smart-garden-cd3b0.firebaseapp.com",
+  projectId: "smart-garden-cd3b0",
+  storageBucket: "smart-garden-cd3b0.appspot.com",
+  messagingSenderId: "702709402883",
+  appId: "1:702709402883:web:e027e4fa04b41dc74d2d36",
+  measurementId: "G-WFDLLGFDRZ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+</script>
 </body>
 </html>

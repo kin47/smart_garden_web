@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -15,28 +14,10 @@ import 'common/config/screen_utils_config.dart';
 import 'firebase_options.dart';
 import 'routes/app_pages.dart';
 
-String envConfig(String flavor) {
-  switch (flavor) {
-    case 'dev':
-      return 'assets/env/.env_dev';
-    case 'staging':
-      return 'assets/env/.env_staging';
-    case 'production':
-      return 'assets/env/.env_production';
-    default:
-      return 'assets/env/.env_dev';
-  }
-}
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  );
-  const flavor = String.fromEnvironment('flavor', defaultValue: 'dev');
-  log("flavor: $flavor");
-  await dotenv.load(
-    fileName: envConfig(flavor),
   );
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

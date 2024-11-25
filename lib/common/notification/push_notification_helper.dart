@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:smart_garden/common/notification/local_notification_helper.dart';
 import 'package:smart_garden/di/di_setup.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -45,12 +44,6 @@ class PushNotificationHelper {
         _payLoad = getNotificationContent(message);
         if (message.notification != null) {
           logger.d("Message: ${message.notification?.title}");
-          if (Platform.isAndroid) {
-            getIt<LocalNotificationHelper>().showNotification(
-              title: message.notification?.title ?? '',
-              body: message.notification?.body ?? '',
-            );
-          }
         }
       });
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);

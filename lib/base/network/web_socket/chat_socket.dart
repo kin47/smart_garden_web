@@ -26,6 +26,7 @@ class ChatSocket {
   final int retryDelay = 1;
   Future<String?> Function()? _getNewToken;
   final String endpoint = dotenv.get('WS_URL');
+  // final String endpoint = "ws://192.168.1.10:8000/ws/chat";
   final Map<int, bool> _isManualDisconnect = {};
 
   // Get stream for specific user chat

@@ -1,16 +1,26 @@
 # smart_garden_web
+## Đề tài:
+Vườn thông minh
 
-A new Flutter project.
+## Sinh viên thực hiện
+Trần Quang Minh - B20DCCN443 - PTIT
 
-## Getting Started
+## Công nghệ sử dụng
+Flutter Web
 
-This project is a starting point for a Flutter application.
+## Deploy
+### Command:
+#### Build Web
+```flutter build web```
 
-A few resources to get you started if this is your first Flutter project:
+#### Deploy Firebase
+```firebase login```
+```firebase init hosting```
+```firebase deploy```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+#### Note:
+- Cần cài đặt firebase-tools
+- Khi deploy không dùng BASE_URL mà set string cứng
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Link web
+https://smart-garden-cd3b0.web.app/
