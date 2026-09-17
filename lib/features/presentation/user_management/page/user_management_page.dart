@@ -15,6 +15,7 @@ import 'package:smart_garden/features/presentation/user_management/bloc/user_man
 import 'package:data_table_2/data_table_2.dart';
 import 'package:smart_garden/features/presentation/user_management/widget/user_information_dialog.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:material_ui/material_ui.dart' as mu;
 
 @RoutePage()
 class UserManagementPage extends StatefulWidget {
@@ -274,7 +275,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
     );
   }
 
-  DataRow _userDataRow({
+  DataRow2 _userDataRow({
     required int stt,
     required int id,
     required String name,
@@ -284,7 +285,7 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
     required bool canReceiveNotification,
     required bool canAutoControl,
   }) {
-    return DataRow(
+    return DataRow2(
       color: WidgetStateProperty.resolveWith<Color?>(
         (Set<WidgetState> states) {
           if (stt % 2 == 0) {
@@ -294,27 +295,27 @@ class _UserManagementPageState extends BaseState<UserManagementPage,
         },
       ),
       cells: [
-        DataCell(
+        mu.DataCell(
           Center(
             child: Text(stt.toString()),
           ),
         ),
-        DataCell(
+        mu.DataCell(
           Text(name),
         ),
-        DataCell(
+        mu.DataCell(
           Text(email),
         ),
-        DataCell(
+        mu.DataCell(
           Text(phoneNumber),
         ),
-        DataCell(
+        mu.DataCell(
           Center(child: ActiveStatusCircle(isActive: canPredictDisease)),
         ),
-        DataCell(
+        mu.DataCell(
           Center(child: ActiveStatusCircle(isActive: canReceiveNotification)),
         ),
-        DataCell(
+        mu.DataCell(
           Center(child: ActiveStatusCircle(isActive: canAutoControl)),
         ),
       ],

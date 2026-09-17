@@ -140,7 +140,9 @@ class DialogService {
     if (isShowActionDialog && isOnlyDialog) return Future.value();
     isShowActionDialog = true;
     return SmartDialog.show(
-      backDismiss: barrierDismissible,
+      backType: barrierDismissible
+          ? SmartBackType.normal
+          : SmartBackType.block,
       builder: (BuildContext context) {
         return PopScope(
           canPop: barrierDismissible,

@@ -8,6 +8,9 @@ Trần Quang Minh - B20DCCN443 - PTIT
 ## Công nghệ sử dụng
 Flutter Web
 
+## Version
+- Flutter 3.47.2
+
 ## Deploy
 ### Command:
 #### Build Web

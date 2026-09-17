@@ -16,6 +16,7 @@ import 'package:smart_garden/features/domain/enum/sort_type.dart';
 import 'package:smart_garden/features/presentation/kit_management/bloc/kit_management_bloc.dart';
 import 'package:smart_garden/routes/app_pages.gr.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:material_ui/material_ui.dart' as mu;
 
 @RoutePage()
 class KitManagementPage extends StatefulWidget {
@@ -225,11 +226,11 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
     );
   }
 
-  DataRow _userDataRow({
+  DataRow2 _userDataRow({
     required int stt,
     required KitEntity kit,
   }) {
-    return DataRow(
+    return DataRow2(
       color: WidgetStateProperty.resolveWith<Color?>(
         (Set<WidgetState> states) {
           if (stt % 2 == 0) {
@@ -239,18 +240,18 @@ class _KitManagementPageState extends BaseState<KitManagementPage,
         },
       ),
       cells: [
-        DataCell(
+        mu.DataCell(
           Center(
             child: Text(stt.toString()),
           ),
         ),
-        DataCell(
+        mu.DataCell(
           Text(kit.name),
         ),
-        DataCell(
+        mu.DataCell(
           Text(kit.password),
         ),
-        DataCell(
+        mu.DataCell(
           Center(
             child: ActiveStatusCircle(
               isActive: kit.numberOfConnections > 0,
