@@ -60,9 +60,9 @@ class UserManagementBloc
       state.copyWith(
         status: BaseStateStatus.loading,
         currentPage: page ?? 1,
-        searchKey: searchKey,
+        searchKey: searchKey ?? state.searchKey,
         orderBy: orderBy,
-        orderType: orderType,
+        orderType: orderType ?? state.orderType,
       ),
     );
 

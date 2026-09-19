@@ -4,8 +4,8 @@ part 'login_response.freezed.dart';
 part 'login_response.g.dart';
 
 @freezed
-class LoginResponse with _$LoginResponse {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
+abstract class LoginResponse with _$LoginResponse {
   const factory LoginResponse({
     String? accessToken,
   }) = _LoginResponse;

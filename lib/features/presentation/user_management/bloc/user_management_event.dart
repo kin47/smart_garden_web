@@ -1,7 +1,7 @@
 part of 'user_management_bloc.dart';
 
 @freezed
-class UserManagementEvent with _$UserManagementEvent {
+abstract class UserManagementEvent with _$UserManagementEvent {
   const factory UserManagementEvent.getData({
     String? searchKey,
     int? page,

@@ -5,8 +5,8 @@ part 'chat_message_model.freezed.dart';
 part 'chat_message_model.g.dart';
 
 @freezed
-class ChatMessageModel with _$ChatMessageModel {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
+abstract class ChatMessageModel with _$ChatMessageModel {
   const factory ChatMessageModel({
     int? id,
     String? message,

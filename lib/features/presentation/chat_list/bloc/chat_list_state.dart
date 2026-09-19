@@ -3,8 +3,8 @@ part of 'chat_list_bloc.dart';
 @CopyWith()
 class ChatListState extends BaseBlocState {
   final String? searchKey;
-  final List<ChatPersonEntity> chatPersons;
-  final ChatPersonEntity? selectedChatPerson;
+  final List<ConversationEntity> chatPersons;
+  final ConversationEntity? selectedChatPerson;
 
   const ChatListState({
     required super.status,
@@ -14,10 +14,8 @@ class ChatListState extends BaseBlocState {
     this.selectedChatPerson,
   });
 
-  factory ChatListState.init() => const ChatListState(
-      status: BaseStateStatus.init,
-      chatPersons: [],
-    );
+  factory ChatListState.init() =>
+      const ChatListState(status: BaseStateStatus.init, chatPersons: []);
 
   @override
   List get props => [

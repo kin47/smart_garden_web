@@ -4,8 +4,8 @@ part 'device_token_request.freezed.dart';
 part 'device_token_request.g.dart';
 
 @freezed
-class DeviceTokenRequest with _$DeviceTokenRequest {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
+abstract class DeviceTokenRequest with _$DeviceTokenRequest {
   const factory DeviceTokenRequest({
     required String deviceToken,
   }) = _DeviceTokenRequest;

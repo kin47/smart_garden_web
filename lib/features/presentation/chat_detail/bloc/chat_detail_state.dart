@@ -12,15 +12,9 @@ class ChatDetailState extends BaseBlocState {
     this.user,
   });
 
-  factory ChatDetailState.init() => const ChatDetailState(
-    status: BaseStateStatus.init,
-  );
+  factory ChatDetailState.init() =>
+      const ChatDetailState(status: BaseStateStatus.init);
 
   @override
-  List get props => [
-    status,
-    message,
-    user,
-    lastSeenMessageIndex,
-  ];
+  List get props => [status, message, user, lastSeenMessageIndex];
 }

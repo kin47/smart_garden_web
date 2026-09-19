@@ -1,7 +1,7 @@
 part of 'kit_and_users_bloc.dart';
 
 @freezed
-class KitAndUsersEvent with _$KitAndUsersEvent {
+abstract class KitAndUsersEvent with _$KitAndUsersEvent {
   const factory KitAndUsersEvent.getUsersInKit({
     required KitEntity kit,
     required int page,

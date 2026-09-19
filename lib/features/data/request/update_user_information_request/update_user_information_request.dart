@@ -4,8 +4,8 @@ part 'update_user_information_request.freezed.dart';
 part 'update_user_information_request.g.dart';
 
 @freezed
-class UpdateUserInformationRequest with _$UpdateUserInformationRequest {
-  @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+abstract class UpdateUserInformationRequest with _$UpdateUserInformationRequest {
   const factory UpdateUserInformationRequest({
     required bool canPredictDisease,
     required bool canReceiveNoti,

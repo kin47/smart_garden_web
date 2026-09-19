@@ -4,8 +4,8 @@ part 'login_request.freezed.dart';
 part 'login_request.g.dart';
 
 @freezed
-class LoginRequest with _$LoginRequest {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
+abstract class LoginRequest with _$LoginRequest {
   const factory LoginRequest({
     required String email,
     required String password,

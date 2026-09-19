@@ -19,42 +19,43 @@ import 'package:universal_html/html.dart' as html;
 
 @RoutePage()
 class ChatDetailPage extends StatefulWidget {
-  final int userId;
+  final int conversationId;
 
-  const ChatDetailPage({
-    super.key,
-    required this.userId,
-  });
+  const ChatDetailPage({super.key, required this.conversationId});
 
   @override
   State<ChatDetailPage> createState() => _ChatDetailPageState();
 }
 
-class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
-    ChatDetailState, ChatDetailBloc> {
+class _ChatDetailPageState
+    extends
+        BaseState<
+          ChatDetailPage,
+          ChatDetailEvent,
+          ChatDetailState,
+          ChatDetailBloc
+        > {
   int? lastSeenMessageIndex;
 
   @override
   void initState() {
     super.initState();
-    bloc.add(
-      ChatDetailEvent.init(
-        userId: widget.userId,
-      ),
-    );
+    bloc.add(ChatDetailEvent.init(conversationId: widget.conversationId));
     bloc.pagingController.addPageRequestListener((pageKey) {
-      bloc.add(ChatDetailEvent.getChatMessages(
-        page: pageKey,
-        userId: widget.userId,
-        lastId: bloc.pagingController.itemList?.last.id,
-      ));
+      bloc.add(
+        ChatDetailEvent.getChatMessages(
+          page: pageKey,
+          conversationId: widget.conversationId,
+          before: bloc.pagingController.itemList?.last.id,
+        ),
+      );
     });
   }
 
   @override
   void dispose() {
     bloc.pagingController.dispose();
-    bloc.wsMessageStream.cancel();
+    bloc.wsMessageStream?.cancel();
     super.dispose();
   }
 
@@ -79,10 +80,8 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
     html.document.title = 'chat_list'.tr();
     return BaseScaffold(
       appBar: blocBuilder(
-        (context, state) => BaseAppBar(
-          hasBack: false,
-          title: state.user?.name ?? 'user'.tr(),
-        ),
+        (context, state) =>
+            BaseAppBar(hasBack: false, title: state.user?.name ?? 'user'.tr()),
         buildWhen: (previous, current) => previous.user != current.user,
       ),
       body: Column(
@@ -95,14 +94,9 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Assets.images.chatNoHistory.image(
-                      height: 0.5.sh,
-                    ),
+                    Assets.images.chatNoHistory.image(height: 0.5.sh),
                     SizedBox(height: 16.h),
-                    Text(
-                      'chat_no_history'.tr(),
-                      style: AppTextStyles.s14w400,
-                    ),
+                    Text('chat_no_history'.tr(), style: AppTextStyles.s14w400),
                   ],
                 ),
               ),
@@ -110,20 +104,17 @@ class _ChatDetailPageState extends BaseState<ChatDetailPage, ChatDetailEvent,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Assets.images.chatNoHistory.image(
-                      height: 0.5.sh,
-                    ),
+                    Assets.images.chatNoHistory.image(height: 0.5.sh),
                     SizedBox(height: 16.h),
-                    Text(
-                      'chat_no_history'.tr(),
-                      style: AppTextStyles.s14w400,
-                    ),
+                    Text('chat_no_history'.tr(), style: AppTextStyles.s14w400),
                   ],
                 ),
               ),
               builder: (context, message, index) {
-                ChatMessageEntity? previousMessage =
-                    getPreviousMessage(bloc.pagingController, index);
+                ChatMessageEntity? previousMessage = getPreviousMessage(
+                  bloc.pagingController,
+                  index,
+                );
                 String? firstMessageInDay;
                 if (!(previousMessage?.time.isSameDay(message.time) ?? false)) {
                   firstMessageInDay = DateTimeUtils.getDateMessage(

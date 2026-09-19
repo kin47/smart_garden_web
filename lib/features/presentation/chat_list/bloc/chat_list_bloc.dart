@@ -10,9 +10,7 @@ import 'package:smart_garden/base/bloc/base_bloc.dart';
 import 'package:smart_garden/base/bloc/base_bloc_state.dart';
 import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
-import 'package:smart_garden/features/data/request/connect_ws_request/connect_ws_request.dart';
-import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
-import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
+import 'package:smart_garden/features/domain/entity/conversation_entity.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
 
 part 'chat_list_event.dart';
@@ -27,44 +25,48 @@ part 'chat_list_bloc.g.dart';
 class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     with BaseCommonMethodMixin {
   ChatListBloc(this._chatRepository) : super(ChatListState.init()) {
-    on<ChatListEvent>(
-      (event, emit) async {
-        await event.when(
-          getChatList: (page, searchKey) => _getChatList(emit, searchKey, page),
-          searchUser: (searchKey) => null,
-          selectChatPerson: (chatPerson) => _selectChatPerson(emit, chatPerson),
-        );
-      },
-    );
-    on<SearchUser>(
-      (event, emit) async {
-        await _searchUser(emit, event.searchKey);
-      },
-      transformer: debounce(const Duration(milliseconds: 300)),
-    );
+    on<ChatListEvent>((event, emit) async {
+      await event.when(
+        getChatList: (page, searchKey) => _getChatList(emit, searchKey, page),
+        searchUser: (searchKey) => null,
+        selectChatPerson: (chatPerson) => _selectChatPerson(emit, chatPerson),
+        conversationUpdated: (conversation) =>
+            _conversationUpdated(emit, conversation),
+      );
+    });
+    on<SearchUser>((event, emit) async {
+      await _searchUser(emit, event.searchKey);
+    }, transformer: debounce(const Duration(milliseconds: 300)));
   }
 
   final ChatRepository _chatRepository;
   final TextEditingController chatTextController = TextEditingController();
+  final List<StreamSubscription<Map<String, dynamic>>> _chatSubscriptions = [];
 
-  final PagingController<int, ChatPersonEntity> pagingController =
+  final PagingController<int, ConversationEntity> pagingController =
       PagingController(firstPageKey: 1);
 
-  _initializeChat(List<ChatPersonEntity> chatPersons) {
-    // Initialize chat connection for all users in the list
-    for (final chatPerson in chatPersons) {
-      _chatRepository.chatInitialize(
-        connectRequest: ConnectWSRequest(userId: chatPerson.userId),
+  void _initializeChat(List<ConversationEntity> conversations) {
+    for (final conversation in conversations) {
+      _chatRepository.connectChat(conversationId: conversation.id);
+      _chatSubscriptions.add(
+        _chatRepository.messageStream(conversationId: conversation.id).listen((
+          event,
+        ) {
+          if (event['type'] != 'message.created') return;
+          final items = [...?pagingController.itemList];
+          final index = items.indexWhere((item) => item.id == conversation.id);
+          if (index <= 0) return;
+          final item = items.removeAt(index);
+          items.insert(0, item);
+          add(ChatListEvent.conversationUpdated(conversation: item));
+        }),
       );
     }
   }
 
   Future _searchUser(Emitter<ChatListState> emit, String searchKey) async {
-    emit(
-      state.copyWith(
-        searchKey: searchKey,
-      ),
-    );
+    emit(state.copyWith(searchKey: searchKey));
     pagingController.refresh();
   }
 
@@ -73,31 +75,17 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     String? searchKey,
     int page,
   ) async {
-    final res = await _chatRepository.getChatList(
-      request: PaginationRequest(
-        page: page,
-        searchKey: searchKey ?? state.searchKey,
-      ),
-    );
-    pagingControllerOnLoad<ChatPersonEntity>(
+    final res = await _chatRepository.getConversations(limit: 100);
+    pagingControllerOnLoad<ConversationEntity>(
       page,
       pagingController,
       res,
+      limit: 100,
       onError: (String message) {
-        emit(
-          state.copyWith(
-            status: BaseStateStatus.failed,
-            message: message,
-          ),
-        );
+        emit(state.copyWith(status: BaseStateStatus.failed, message: message));
       },
       onSuccess: (r) {
-        emit(
-          state.copyWith(
-            chatPersons: state.chatPersons + r,
-            status: BaseStateStatus.idle,
-          ),
-        );
+        emit(state.copyWith(chatPersons: r, status: BaseStateStatus.idle));
         _initializeChat(r);
       },
     );
@@ -105,7 +93,7 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
 
   Future _selectChatPerson(
     Emitter<ChatListState> emit,
-    ChatPersonEntity chatPerson,
+    ConversationEntity chatPerson,
   ) async {
     emit(
       state.copyWith(
@@ -115,8 +103,22 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     );
   }
 
+  Future<void> _conversationUpdated(
+    Emitter<ChatListState> emit,
+    ConversationEntity conversation,
+  ) async {
+    final items = [...state.chatPersons]
+      ..removeWhere((item) => item.id == conversation.id)
+      ..insert(0, conversation);
+    pagingController.itemList = items;
+    emit(state.copyWith(chatPersons: items));
+  }
+
   @override
   Future<void> close() async {
+    for (final subscription in _chatSubscriptions) {
+      await subscription.cancel();
+    }
     await _chatRepository.disconnectChat();
     return super.close();
   }

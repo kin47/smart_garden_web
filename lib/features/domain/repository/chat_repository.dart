@@ -1,34 +1,33 @@
 import 'package:dartz/dartz.dart';
 import 'package:smart_garden/base/network/errors/error.dart';
-import 'package:smart_garden/features/data/model/chat_message_socket/chat_message_socket.dart';
-import 'package:smart_garden/features/data/model/web_socket_model/web_socket_model.dart';
-import 'package:smart_garden/features/data/request/connect_ws_request/connect_ws_request.dart';
-import 'package:smart_garden/features/data/request/get_chat_messages_request/get_chat_messages_request.dart';
-import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
-import 'package:smart_garden/features/domain/entity/chat_message_entity.dart';
-import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
+import 'package:smart_garden/features/domain/entity/conversation_entity.dart';
+import 'package:smart_garden/features/domain/entity/message_entity.dart';
 
 abstract class ChatRepository {
-  Future<Either<BaseError, List<ChatMessageEntity>>> getChatMessages({
-    required GetChatMessagesRequest request,
+  Future<Either<BaseError, List<ConversationEntity>>> getConversations({
+    int? limit,
   });
 
-  Future<Either<BaseError, List<ChatPersonEntity>>> getChatList({
-    required PaginationRequest request,
+  Future<Either<BaseError, List<MessageEntity>>> getMessages({
+    required int conversationId,
+    int? before,
+    int? limit,
   });
-
-  Future<bool> readMessage({required int userId});
 
   Future<bool> sendMessage({
-    required String message,
-    required int userId,
+    required int conversationId,
+    required String body,
+    String? clientMessageId,
   });
 
-  void chatInitialize({required ConnectWSRequest connectRequest});
+  Future<bool> readMessage({
+    required int conversationId,
+    required int lastReadMessageId,
+  });
+
+  Future<void> connectChat({required int conversationId});
 
   Future<void> disconnectChat();
 
-  Stream<WebSocketModel<ChatMessageSocket>> wsMessageStream({
-    required int userId,
-  });
+  Stream<Map<String, dynamic>> messageStream({required int conversationId});
 }

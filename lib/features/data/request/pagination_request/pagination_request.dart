@@ -5,8 +5,8 @@ part 'pagination_request.freezed.dart';
 part 'pagination_request.g.dart';
 
 @freezed
-class PaginationRequest with _$PaginationRequest {
-  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
+abstract class PaginationRequest with _$PaginationRequest {
   factory PaginationRequest({
     String? searchKey,
     required int page,

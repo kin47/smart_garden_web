@@ -5,8 +5,8 @@ part 'chat_person_model.freezed.dart';
 part 'chat_person_model.g.dart';
 
 @freezed
-class ChatPersonModel with _$ChatPersonModel {
-  @JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
+abstract class ChatPersonModel with _$ChatPersonModel {
   const factory ChatPersonModel({
     int? userId,
     String? avatar,

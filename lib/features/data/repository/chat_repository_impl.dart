@@ -6,15 +6,9 @@ import 'package:smart_garden/base/network/errors/error.dart';
 import 'package:smart_garden/base/network/errors/extension.dart';
 import 'package:smart_garden/base/network/web_socket/chat_socket.dart';
 import 'package:smart_garden/features/data/datasource/remote/chat_service/chat_service.dart';
-import 'package:smart_garden/features/data/model/chat_message_socket/chat_message_socket.dart';
-import 'package:smart_garden/features/data/model/web_socket_model/web_socket_model.dart';
-import 'package:smart_garden/features/data/request/connect_ws_request/connect_ws_request.dart';
 import 'package:smart_garden/features/data/request/get_chat_messages_request/get_chat_messages_request.dart';
-import 'package:smart_garden/features/data/request/pagination_request/pagination_request.dart';
-import 'package:smart_garden/features/domain/entity/chat_message_entity.dart';
-import 'package:smart_garden/features/domain/entity/chat_person_entity.dart';
-import 'package:smart_garden/features/domain/enum/sender_enum.dart';
-import 'package:smart_garden/features/domain/enum/ws_action_enum.dart';
+import 'package:smart_garden/features/domain/entity/conversation_entity.dart';
+import 'package:smart_garden/features/domain/entity/message_entity.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
 
 @Injectable(as: ChatRepository)
@@ -25,107 +19,70 @@ class ChatRepositoryImpl implements ChatRepository {
   ChatRepositoryImpl(this._service, this._chatSocket);
 
   @override
-  Future<Either<BaseError, List<ChatPersonEntity>>> getChatList({
-    required PaginationRequest request,
+  Future<Either<BaseError, List<ConversationEntity>>> getConversations({
+    int? limit,
   }) async {
     try {
-      final res = await _service.getChatList(request: request);
-      if (res.data == null) {
+      final response = await _service.getConversations(limit: limit);
+      if (response.data == null) {
         return left(BaseError.httpUnknownError('error_system'.tr()));
       }
-      return right(
-        res.data!.map((e) => ChatPersonEntity.fromModel(e)).toList(),
-      );
-    } on DioException catch (e) {
-      return left(e.baseError);
+      return right(response.data!.map(ConversationEntity.fromModel).toList());
+    } on DioException catch (error) {
+      return left(error.baseError);
     }
   }
 
   @override
-  Future<Either<BaseError, List<ChatMessageEntity>>> getChatMessages({
-    required GetChatMessagesRequest request,
+  Future<Either<BaseError, List<MessageEntity>>> getMessages({
+    required int conversationId,
+    int? before,
+    int? limit,
   }) async {
     try {
-      final res = await _service.getChatMessages(request: request);
-      if (res.data == null) {
+      final response = await _service.getMessages(
+        conversationId: conversationId,
+        request: GetChatMessagesRequest(before: before, limit: limit ?? 30),
+      );
+      if (response.data == null) {
         return left(BaseError.httpUnknownError('error_system'.tr()));
       }
-      return right(
-        res.data!.map((e) => ChatMessageEntity.fromModel(e)).toList(),
-      );
-    } on DioException catch (e) {
-      return left(e.baseError);
-    }
-  }
-
-  @override
-  Future<bool> readMessage({
-    required int userId,
-  }) async {
-    try {
-      final res = await _chatSocket.readMessage(userId);
-      return res;
-    } catch (e) {
-      return false;
+      return right(response.data!.map(MessageEntity.fromModel).toList());
+    } on DioException catch (error) {
+      return left(error.baseError);
     }
   }
 
   @override
   Future<bool> sendMessage({
-    required String message,
-    required int userId,
-  }) async {
-    try {
-      final res = await _chatSocket.sendMessage(message, userId);
-      return res;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  @override
-  void chatInitialize({
-    required ConnectWSRequest connectRequest,
+    required int conversationId,
+    required String body,
+    String? clientMessageId,
   }) {
-    _chatSocket.initialize(
-      connectRequest: connectRequest,
+    return _chatSocket.sendMessage(
+      conversationId,
+      body,
+      clientMessageId: clientMessageId,
     );
   }
 
   @override
-  Future<void> disconnectChat() {
-    return _chatSocket.dispose();
+  Future<bool> readMessage({
+    required int conversationId,
+    required int lastReadMessageId,
+  }) {
+    return _chatSocket.readMessage(conversationId, lastReadMessageId);
   }
 
   @override
-  Stream<WebSocketModel<ChatMessageSocket>> wsMessageStream({
-    required int userId,
-  }) async* {
-    yield* _chatSocket.wsEventStream(userId).asyncExpand(
-      (event) async* {
-        switch (event.action) {
-          case WSActionEnum.sendChatMessage:
-            yield WebSocketModel<ChatMessageSocket>(
-              action: WSActionEnum.sendChatMessage,
-              data: ChatMessageSocket(
-                message: event.data?.message ?? '',
-                sender: event.data?.sender ?? SenderEnum.user,
-              ),
-            );
-            break;
-          case WSActionEnum.seen:
-            final sender = event.data?.sender;
-            if (sender == SenderEnum.admin) {
-              yield WebSocketModel<ChatMessageSocket>(
-                action: WSActionEnum.seen,
-                data: null,
-              );
-            }
-            break;
-          default:
-            break;
-        }
-      },
-    );
+  Future<void> connectChat({required int conversationId}) {
+    return _chatSocket.connect(conversationId);
   }
+
+  @override
+  Future<void> disconnectChat() => _chatSocket.dispose();
+
+  @override
+  Stream<Map<String, dynamic>> messageStream({required int conversationId}) =>
+      _chatSocket.eventStream(conversationId);
 }
