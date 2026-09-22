@@ -44,6 +44,21 @@ class ConversationEntity extends Equatable {
     );
   }
 
+  ConversationEntity copyWith({bool? hasUnreadMessages}) {
+    return ConversationEntity(
+      id: id,
+      kind: kind,
+      status: status,
+      assignedAgentId: assignedAgentId,
+      participants: participants,
+      lastMessage: lastMessage,
+      lastReadMessageId: lastReadMessageId,
+      hasUnreadMessages: hasUnreadMessages ?? this.hasUnreadMessages,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
   @override
   List<Object?> get props => [
     id,

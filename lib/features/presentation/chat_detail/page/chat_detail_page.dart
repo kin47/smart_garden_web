@@ -36,10 +36,12 @@ class _ChatDetailPageState
           ChatDetailBloc
         > {
   int? lastSeenMessageIndex;
+  late final FocusNode _composerFocusNode;
 
   @override
   void initState() {
     super.initState();
+    _composerFocusNode = FocusNode()..addListener(_onComposerFocusChanged);
     bloc.add(ChatDetailEvent.init(conversationId: widget.conversationId));
     bloc.pagingController.addPageRequestListener((pageKey) {
       bloc.add(
@@ -54,8 +56,9 @@ class _ChatDetailPageState
 
   @override
   void dispose() {
-    bloc.pagingController.dispose();
-    bloc.wsMessageStream?.cancel();
+    _composerFocusNode
+      ..removeListener(_onComposerFocusChanged)
+      ..dispose();
     super.dispose();
   }
 
@@ -152,6 +155,8 @@ class _ChatDetailPageState
           ),
           ChatTextField(
             controller: bloc.chatTextController,
+            focusNode: _composerFocusNode,
+            onTap: _requestRead,
             onSend: (message) {
               if (message?.isNotEmpty ?? false) {
                 bloc.add(ChatDetailEvent.sendMessage(message: message!));
@@ -161,6 +166,18 @@ class _ChatDetailPageState
         ],
       ),
     );
+  }
+
+  void _onComposerFocusChanged() {
+    if (_composerFocusNode.hasFocus) {
+      _requestRead();
+    }
+  }
+
+  void _requestRead() {
+    if (mounted) {
+      bloc.add(const ChatDetailEvent.readMessage());
+    }
   }
 
   ChatMessageEntity? getPreviousMessage(

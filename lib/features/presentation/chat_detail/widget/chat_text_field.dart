@@ -6,11 +6,15 @@ import 'package:smart_garden/common/app_theme/app_colors.dart';
 class ChatTextField extends StatelessWidget {
   final TextEditingController controller;
   final Function(String?) onSend;
+  final FocusNode? focusNode;
+  final VoidCallback? onTap;
 
   const ChatTextField({
     super.key,
     required this.controller,
     required this.onSend,
+    this.focusNode,
+    this.onTap,
   });
 
   @override
@@ -22,12 +26,12 @@ class ChatTextField extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller,
+              focusNode: focusNode,
+              onTap: onTap,
               decoration: InputDecoration(
                 hintText: 'chat_hint'.tr(),
                 border: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: AppColors.primary700,
-                  ),
+                  borderSide: const BorderSide(color: AppColors.primary700),
                   borderRadius: BorderRadius.circular(16.r),
                 ),
               ),
@@ -37,10 +41,7 @@ class ChatTextField extends StatelessWidget {
           ),
           SizedBox(width: 8.w),
           IconButton(
-            icon: const Icon(
-              Icons.send,
-              color: AppColors.primary700,
-            ),
+            icon: const Icon(Icons.send, color: AppColors.primary700),
             onPressed: () {
               onSend(controller.text);
               controller.clear();

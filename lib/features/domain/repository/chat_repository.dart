@@ -27,6 +27,8 @@ abstract class ChatRepository {
 
   Future<void> connectChat({required int conversationId});
 
+  Future<void> releaseConversation({required int conversationId});
+
   Future<void> disconnectChat();
 
   Stream<Map<String, dynamic>> messageStream({required int conversationId});

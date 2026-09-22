@@ -109,10 +109,20 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     Emitter<ChatListState> emit,
     ConversationEntity chatPerson,
   ) async {
+    // Optimistically clear the unread indicator; opening the detail page
+    // marks the conversation read on the server shortly after.
+    final updatedChatPerson = chatPerson.copyWith(hasUnreadMessages: false);
+    final items = [...state.chatPersons];
+    final index = items.indexWhere((item) => item.id == updatedChatPerson.id);
+    if (index >= 0) {
+      items[index] = updatedChatPerson;
+      pagingController.itemList = items;
+    }
     emit(
       state.copyWith(
         status: BaseStateStatus.idle,
-        selectedChatPerson: chatPerson,
+        chatPersons: items,
+        selectedChatPerson: updatedChatPerson,
       ),
     );
   }

@@ -50,6 +50,7 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
       PagingController(firstPageKey: 1);
   StreamSubscription<Map<String, dynamic>>? wsMessageStream;
   int? _conversationId;
+  int? _localReadCursor;
 
   Future<void> _init(Emitter<ChatDetailState> emit, int conversationId) async {
     _conversationId = conversationId;
@@ -75,17 +76,36 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
                 add(const ChatDetailEvent.readMessage());
               }
             }
+          } else if (event['type'] == 'conversation.read') {
+            _applyRemoteReadCursor(event['data']);
           }
         });
   }
 
   Future<void> _readMessage(Emitter<ChatDetailState> emit) async {
-    final lastMessage = pagingController.itemList?.firstOrNull;
-    if (_conversationId == null || lastMessage?.id == null) return;
-    await _chatRepository.readMessage(
+    final messages = pagingController.itemList;
+    if (_conversationId == null || messages == null) return;
+    final lastReadMessageId = messages
+        .where(
+          (message) => message.sender == SenderEnum.user && message.id != null,
+        )
+        .fold<int?>(
+          null,
+          (latestId, message) => latestId == null || message.id! > latestId
+              ? message.id
+              : latestId,
+        );
+    if (lastReadMessageId == null ||
+        (_localReadCursor != null && lastReadMessageId <= _localReadCursor!)) {
+      return;
+    }
+    final sent = await _chatRepository.readMessage(
       conversationId: _conversationId!,
-      lastReadMessageId: lastMessage!.id!,
+      lastReadMessageId: lastReadMessageId,
     );
+    if (sent) {
+      _localReadCursor = lastReadMessageId;
+    }
   }
 
   Future<void> _getChatMessages(
@@ -109,6 +129,7 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
           Right(messages.map(_toChatMessage).toList()),
           limit: 30,
         );
+        add(const ChatDetailEvent.readMessage());
         emit(state.copyWith(status: BaseStateStatus.idle));
       },
     );
@@ -141,6 +162,36 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
     isUserRead: false,
   );
 
+  void _applyRemoteReadCursor(dynamic rawData) {
+    if (rawData is! Map<String, dynamic>) return;
+    final readerUserId = (rawData['user_id'] as num?)?.toInt();
+    final lastReadMessageId = (rawData['last_read_message_id'] as num?)
+        ?.toInt();
+    if (readerUserId == null ||
+        readerUserId == state.user?.id ||
+        lastReadMessageId == null) {
+      return;
+    }
+    final messages = pagingController.itemList;
+    if (messages == null) return;
+    final updatedMessages = messages
+        .map(
+          (message) =>
+              message.sender == SenderEnum.admin &&
+                  (message.id ?? 0) <= lastReadMessageId
+              ? message.copyWith(isUserRead: true)
+              : message,
+        )
+        .toList();
+    pagingController.itemList = updatedMessages;
+    final seenIndex = updatedMessages.indexWhere(
+      (message) => message.sender == SenderEnum.admin && message.isUserRead,
+    );
+    if (seenIndex >= 0) {
+      add(ChatDetailEvent.updateLastSeenMessageIndex(seenIndex));
+    }
+  }
+
   void _addMessage(Emitter<ChatDetailState> emit, ChatMessageEntity message) {
     pagingControllerAddItem(pagingController, message, 0);
   }
@@ -155,7 +206,10 @@ class ChatDetailBloc extends BaseBloc<ChatDetailEvent, ChatDetailState>
   @override
   Future<void> close() async {
     await wsMessageStream?.cancel();
-    await _chatRepository.disconnectChat();
+    final conversationId = _conversationId;
+    if (conversationId != null) {
+      await _chatRepository.releaseConversation(conversationId: conversationId);
+    }
     chatTextController.dispose();
     pagingController.dispose();
     return super.close();

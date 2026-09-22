@@ -12,13 +12,21 @@ class ChatSocket {
   final Map<int, WebSocketChannel> _channels = {};
   final Map<int, StreamController<Map<String, dynamic>>> _controllers = {};
   final Map<int, bool> _manualDisconnect = {};
+  final Map<int, int> _pendingReadMessageIds = {};
+  final Map<int, int> _refCounts = {};
   final String endpoint = dotenv.get('WS_URL');
 
   Stream<Map<String, dynamic>> eventStream(int conversationId) =>
       _controllers[conversationId]?.stream ?? const Stream.empty();
 
   Future<void> connect(int conversationId) async {
-    await disposeConversation(conversationId);
+    _refCounts[conversationId] = (_refCounts[conversationId] ?? 0) + 1;
+    // Reuse the existing connection when another caller (e.g. the chat list
+    // and chat detail views) is already connected to avoid duplicate
+    // broadcasts for the same conversation.
+    if (_channels.containsKey(conversationId)) {
+      return;
+    }
     _manualDisconnect[conversationId] = false;
     _controllers[conversationId] =
         StreamController<Map<String, dynamic>>.broadcast();
@@ -37,7 +45,9 @@ class ChatSocket {
         '$endpoint/conversations/$conversationId/',
       ).replace(queryParameters: {'access_token': token});
       final channel = WebSocketChannel.connect(uri);
+      await channel.ready;
       _channels[conversationId] = channel;
+      await _flushPendingRead(conversationId);
       channel.stream.listen(
         (message) => _onMessage(message, conversationId),
         onDone: () => _reconnect(conversationId),
@@ -78,20 +88,32 @@ class ChatSocket {
     String body, {
     String? clientMessageId,
   }) async {
-    return _send(conversationId, {
-      'type': 'message.send',
-      'data': {
-        'body': body,
-        if (clientMessageId case final id?) 'client_message_id': id,
-      },
-    });
+    final data = <String, dynamic>{'body': body};
+    if (clientMessageId != null) {
+      data['client_message_id'] = clientMessageId;
+    }
+    return _send(conversationId, {'type': 'message.send', 'data': data});
   }
 
   Future<bool> readMessage(int conversationId, int lastReadMessageId) async {
-    return _send(conversationId, {
+    _pendingReadMessageIds[conversationId] ??= lastReadMessageId;
+    if (lastReadMessageId > _pendingReadMessageIds[conversationId]!) {
+      _pendingReadMessageIds[conversationId] = lastReadMessageId;
+    }
+    return _flushPendingRead(conversationId);
+  }
+
+  Future<bool> _flushPendingRead(int conversationId) async {
+    final lastReadMessageId = _pendingReadMessageIds[conversationId];
+    if (lastReadMessageId == null) return true;
+    final sent = await _send(conversationId, {
       'type': 'conversation.read',
       'data': {'last_read_message_id': lastReadMessageId},
     });
+    if (sent && _pendingReadMessageIds[conversationId] == lastReadMessageId) {
+      _pendingReadMessageIds.remove(conversationId);
+    }
+    return sent;
   }
 
   Future<bool> _send(int conversationId, Map<String, dynamic> payload) async {
@@ -101,13 +123,26 @@ class ChatSocket {
     return true;
   }
 
+  // Releases one caller's interest in the conversation; only tears down the
+  // underlying connection once no other caller still needs it.
+  Future<void> release(int conversationId) async {
+    final remaining = (_refCounts[conversationId] ?? 1) - 1;
+    if (remaining > 0) {
+      _refCounts[conversationId] = remaining;
+      return;
+    }
+    await disposeConversation(conversationId);
+  }
+
   Future<void> disposeConversation(int conversationId) async {
+    _refCounts.remove(conversationId);
     _manualDisconnect[conversationId] = true;
     await _channels[conversationId]?.sink.close(status.normalClosure);
     await _controllers[conversationId]?.close();
     _channels.remove(conversationId);
     _controllers.remove(conversationId);
     _manualDisconnect.remove(conversationId);
+    _pendingReadMessageIds.remove(conversationId);
   }
 
   Future<void> dispose() async {

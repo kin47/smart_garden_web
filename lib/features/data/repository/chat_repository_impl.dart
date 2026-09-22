@@ -80,6 +80,11 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
+  Future<void> releaseConversation({required int conversationId}) {
+    return _chatSocket.release(conversationId);
+  }
+
+  @override
   Future<void> disconnectChat() => _chatSocket.dispose();
 
   @override
