@@ -3,6 +3,7 @@ part of 'chat_list_bloc.dart';
 @CopyWith()
 class ChatListState extends BaseBlocState {
   final String? searchKey;
+  final int? currentUserId;
   final List<ConversationEntity> chatPersons;
   final ConversationEntity? selectedChatPerson;
 
@@ -11,6 +12,7 @@ class ChatListState extends BaseBlocState {
     super.message,
     required this.chatPersons,
     this.searchKey,
+    this.currentUserId,
     this.selectedChatPerson,
   });
 
@@ -23,6 +25,7 @@ class ChatListState extends BaseBlocState {
     message,
     chatPersons,
     searchKey,
+    currentUserId,
     selectedChatPerson,
   ];
 }

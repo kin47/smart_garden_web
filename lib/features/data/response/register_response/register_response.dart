@@ -4,8 +4,8 @@ part 'register_response.freezed.dart';
 part 'register_response.g.dart';
 
 @freezed
-@JsonSerializable(fieldRename: FieldRename.snake)
 abstract class RegisterResponse with _$RegisterResponse {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory RegisterResponse({
     String? message,
   }) = _RegisterResponse;

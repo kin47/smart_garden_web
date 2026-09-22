@@ -5,8 +5,8 @@ part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
 @freezed
-@JsonSerializable(fieldRename: FieldRename.snake)
 abstract class UserModel with _$UserModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory UserModel({
     int? id,
     String? email,

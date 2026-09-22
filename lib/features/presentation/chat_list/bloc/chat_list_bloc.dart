@@ -11,6 +11,7 @@ import 'package:smart_garden/base/bloc/base_bloc_state.dart';
 import 'package:smart_garden/base/bloc/bloc_status.dart';
 import 'package:smart_garden/common/index.dart';
 import 'package:smart_garden/features/domain/entity/conversation_entity.dart';
+import 'package:smart_garden/features/domain/repository/auth_repository.dart';
 import 'package:smart_garden/features/domain/repository/chat_repository.dart';
 
 part 'chat_list_event.dart';
@@ -24,7 +25,8 @@ part 'chat_list_bloc.g.dart';
 @injectable
 class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     with BaseCommonMethodMixin {
-  ChatListBloc(this._chatRepository) : super(ChatListState.init()) {
+  ChatListBloc(this._chatRepository, this._authRepository)
+    : super(ChatListState.init()) {
     on<ChatListEvent>((event, emit) async {
       await event.when(
         getChatList: (page, searchKey) => _getChatList(emit, searchKey, page),
@@ -40,6 +42,7 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
   }
 
   final ChatRepository _chatRepository;
+  final AuthRepository _authRepository;
   final TextEditingController chatTextController = TextEditingController();
   final List<StreamSubscription<Map<String, dynamic>>> _chatSubscriptions = [];
 
@@ -75,6 +78,11 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
     String? searchKey,
     int page,
   ) async {
+    var currentUserId = state.currentUserId;
+    if (currentUserId == null) {
+      final userResult = await _authRepository.getUserInfo();
+      userResult.fold<void>((_) {}, (user) => currentUserId = user.id);
+    }
     final res = await _chatRepository.getConversations(limit: 100);
     pagingControllerOnLoad<ConversationEntity>(
       page,
@@ -85,7 +93,13 @@ class ChatListBloc extends BaseBloc<ChatListEvent, ChatListState>
         emit(state.copyWith(status: BaseStateStatus.failed, message: message));
       },
       onSuccess: (r) {
-        emit(state.copyWith(chatPersons: r, status: BaseStateStatus.idle));
+        emit(
+          state.copyWith(
+            chatPersons: r,
+            currentUserId: currentUserId,
+            status: BaseStateStatus.idle,
+          ),
+        );
         _initializeChat(r);
       },
     );

@@ -4,8 +4,8 @@ part 'register_request.freezed.dart';
 part 'register_request.g.dart';
 
 @freezed
-@JsonSerializable(fieldRename: FieldRename.snake)
 abstract class RegisterRequest with _$RegisterRequest {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory RegisterRequest({
     required String email,
     required String password,

@@ -5,8 +5,8 @@ part 'store_model.freezed.dart';
 part 'store_model.g.dart';
 
 @freezed
-@JsonSerializable(fieldRename: FieldRename.snake)
 abstract class StoreModel with _$StoreModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory StoreModel({
     int? id,
     String? name,

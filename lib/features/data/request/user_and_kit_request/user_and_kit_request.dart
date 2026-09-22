@@ -4,8 +4,8 @@ part 'user_and_kit_request.freezed.dart';
 part 'user_and_kit_request.g.dart';
 
 @freezed
-@JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
 abstract class UserAndKitRequest with _$UserAndKitRequest {
+  @JsonSerializable(fieldRename: FieldRename.snake, includeIfNull: false)
   const factory UserAndKitRequest({
     int? userId,
     int? kitId,

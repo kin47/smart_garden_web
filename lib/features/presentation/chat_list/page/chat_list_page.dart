@@ -115,6 +115,7 @@ class _ChatListPageState
                     builder: (context, chatPerson, index) => blocBuilder(
                       (context, state) => ChatPersonItem(
                         chatPerson: chatPerson,
+                        currentUserId: state.currentUserId,
                         isSelected: state.selectedChatPerson == chatPerson,
                         onTap: () {
                           _tabsRouter?.setActiveIndex(index);
@@ -127,7 +128,8 @@ class _ChatListPageState
                       ),
                       buildWhen: (previous, current) =>
                           previous.selectedChatPerson !=
-                          current.selectedChatPerson,
+                              current.selectedChatPerson ||
+                          previous.currentUserId != current.currentUserId,
                     ),
                     separatorBuilder: (context, index) =>
                         Container(height: 1.h, color: AppColors.gray500),

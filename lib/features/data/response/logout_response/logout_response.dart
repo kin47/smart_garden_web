@@ -4,8 +4,8 @@ part 'logout_response.freezed.dart';
 part 'logout_response.g.dart';
 
 @freezed
-@JsonSerializable(fieldRename: FieldRename.snake)
 abstract class LogoutResponse with _$LogoutResponse {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory LogoutResponse({
     String? message,
   }) = _LogoutResponse;

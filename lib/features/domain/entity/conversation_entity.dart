@@ -1,12 +1,16 @@
 import 'package:equatable/equatable.dart';
 import 'package:smart_garden/features/data/model/conversation_model/conversation_model.dart';
+import 'package:smart_garden/features/domain/entity/message_entity.dart';
 
 class ConversationEntity extends Equatable {
   final int id;
   final String kind;
   final String status;
   final int? assignedAgentId;
+  final List<ConversationParticipantModel> participants;
+  final MessageEntity? lastMessage;
   final int? lastReadMessageId;
+  final bool hasUnreadMessages;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -15,7 +19,10 @@ class ConversationEntity extends Equatable {
     required this.kind,
     required this.status,
     this.assignedAgentId,
+    this.participants = const [],
+    this.lastMessage,
     this.lastReadMessageId,
+    this.hasUnreadMessages = false,
     this.createdAt,
     this.updatedAt,
   });
@@ -26,7 +33,12 @@ class ConversationEntity extends Equatable {
       kind: model.kind ?? 'support',
       status: model.status ?? 'open',
       assignedAgentId: model.assignedAgentId,
+      participants: model.participants,
+      lastMessage: model.lastMessage == null
+          ? null
+          : MessageEntity.fromModel(model.lastMessage!),
       lastReadMessageId: model.lastReadMessageId,
+      hasUnreadMessages: model.hasUnreadMessages ?? false,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     );
@@ -38,6 +50,9 @@ class ConversationEntity extends Equatable {
     kind,
     status,
     assignedAgentId,
+    participants,
+    lastMessage,
     lastReadMessageId,
+    hasUnreadMessages,
   ];
 }
