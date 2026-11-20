@@ -85,7 +85,7 @@ class UserManagementBloc
         state.copyWith(
           status: BaseStateStatus.idle,
           users: r.data,
-          totalPages: r.totalPages,
+          totalPages: r.totalPages == 0 ? 1 : r.totalPages,
           totalUsers: r.totalData,
         ),
       ),

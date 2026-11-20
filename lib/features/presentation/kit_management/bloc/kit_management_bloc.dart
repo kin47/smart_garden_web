@@ -76,7 +76,7 @@ class KitManagementBloc extends BaseBloc<KitManagementEvent, KitManagementState>
         state.copyWith(
           status: BaseStateStatus.idle,
           kits: r.data,
-          totalPages: r.totalPages,
+          totalPages: r.totalPages == 0 ? 1 : r.totalPages,
           totalKits: r.totalData,
         ),
       ),
