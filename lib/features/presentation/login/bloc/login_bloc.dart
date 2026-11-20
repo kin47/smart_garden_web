@@ -40,27 +40,23 @@ class LoginBloc extends BaseBloc<LoginEvent, LoginState> {
   final AuthRepository _authRepository;
 
   Future<void> onInputUsername(
-      Emitter<LoginState> emit, String username) async {
-    emit(
-      state.copyWith(
-        username: username,
-        status: BaseStateStatus.idle,
-      ),
-    );
+    Emitter<LoginState> emit,
+    String username,
+  ) async {
+    emit(state.copyWith(username: username, status: BaseStateStatus.idle));
   }
 
   Future<void> onInputPassword(
-      Emitter<LoginState> emit, String password) async {
-    emit(
-      state.copyWith(
-        password: password,
-        status: BaseStateStatus.idle,
-      ),
-    );
+    Emitter<LoginState> emit,
+    String password,
+  ) async {
+    emit(state.copyWith(password: password, status: BaseStateStatus.idle));
   }
 
   Future<void> onPasswordVisibilityChanged(
-      Emitter<LoginState> emit, bool isVisible) async {
+    Emitter<LoginState> emit,
+    bool isVisible,
+  ) async {
     emit(
       state.copyWith(
         isPasswordVisible: isVisible,
@@ -80,21 +76,25 @@ class LoginBloc extends BaseBloc<LoginEvent, LoginState> {
       ),
     );
 
-    await result.fold((l) async {
-      emit(
-        state.copyWith(
-          status: BaseStateStatus.failed,
-          message: l.getError,
-        ),
-      );
-    }, (r) async {
-      await getIt<LocalStorage>().save(AuthConstants.token, r.accessToken);
-      emit(
-        state.copyWith(
-          status: BaseStateStatus.success,
-        ),
-      );
-    });
+    await result.fold(
+      (l) async {
+        emit(
+          state.copyWith(status: BaseStateStatus.failed, message: l.getError),
+        );
+      },
+      (r) async {
+        await getIt<LocalStorage>().save(AuthConstants.token, r.accessToken);
+        if (r.refreshToken != null) {
+          await getIt<LocalStorage>().save(
+            AuthConstants.refreshToken,
+            r.refreshToken,
+          );
+        } else {
+          await getIt<LocalStorage>().remove(AuthConstants.refreshToken);
+        }
+        emit(state.copyWith(status: BaseStateStatus.success));
+      },
+    );
   }
 
   Future resendEmail(Emitter<LoginState> emit) async {
@@ -106,16 +106,9 @@ class LoginBloc extends BaseBloc<LoginEvent, LoginState> {
 
     result.fold(
       (l) => emit(
-        state.copyWith(
-          status: BaseStateStatus.failed,
-          message: l.getError,
-        ),
+        state.copyWith(status: BaseStateStatus.failed, message: l.getError),
       ),
-      (r) => emit(
-        state.copyWith(
-          status: BaseStateStatus.showPopUp,
-        ),
-      ),
+      (r) => emit(state.copyWith(status: BaseStateStatus.showPopUp)),
     );
   }
 }
