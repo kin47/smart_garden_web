@@ -48,7 +48,7 @@ class _SplashPageState
       backgroundColor: AppColors.splashBackground,
       body: Center(
         child: Assets.images.logo.image(
-          width: 0.7.sw,
+          height: 0.3.sh
         ),
       ),
     );

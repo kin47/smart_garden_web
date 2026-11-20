@@ -39,7 +39,7 @@ class BaseTabBar extends StatelessWidget {
         children: [
           1.sw > 700
               ? Assets.images.logo.image(
-                  width: 0.2.sw,
+                  width: 0.12.sw
                 )
               : SizedBox(height: 8.h),
           ...items

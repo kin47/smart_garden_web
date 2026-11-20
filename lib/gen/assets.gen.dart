@@ -31,14 +31,6 @@ class $AssetsEnvGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/app_bar_bg.png
-  AssetGenImage get appBarBg =>
-      const AssetGenImage('assets/images/app_bar_bg.png');
-
-  /// File path: assets/images/app_icon.png
-  AssetGenImage get appIcon =>
-      const AssetGenImage('assets/images/app_icon.png');
-
   /// File path: assets/images/avatar_default.png
   AssetGenImage get avatarDefault =>
       const AssetGenImage('assets/images/avatar_default.png');
@@ -55,18 +47,6 @@ class $AssetsImagesGen {
   AssetGenImage get bubbleChatWhite9 =>
       const AssetGenImage('assets/images/bubble_chat_white.9.png');
 
-  /// File path: assets/images/carousel_slider_1.png
-  AssetGenImage get carouselSlider1 =>
-      const AssetGenImage('assets/images/carousel_slider_1.png');
-
-  /// File path: assets/images/carousel_slider_2.png
-  AssetGenImage get carouselSlider2 =>
-      const AssetGenImage('assets/images/carousel_slider_2.png');
-
-  /// File path: assets/images/carousel_slider_3.png
-  AssetGenImage get carouselSlider3 =>
-      const AssetGenImage('assets/images/carousel_slider_3.png');
-
   /// File path: assets/images/chat_no_history.png
   AssetGenImage get chatNoHistory =>
       const AssetGenImage('assets/images/chat_no_history.png');
@@ -74,6 +54,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/cover_image_default.jpg
   AssetGenImage get coverImageDefault =>
       const AssetGenImage('assets/images/cover_image_default.jpg');
+
+  /// File path: assets/images/favicon.png
+  AssetGenImage get favicon32 =>
+      const AssetGenImage('assets/images/favicon.png');
 
   /// File path: assets/images/ic_cloudy.png
   AssetGenImage get icCloudy =>
@@ -121,10 +105,6 @@ class $AssetsImagesGen {
   AssetGenImage get icWindy =>
       const AssetGenImage('assets/images/ic_windy.png');
 
-  /// File path: assets/images/kit_image.png
-  AssetGenImage get kitImage =>
-      const AssetGenImage('assets/images/kit_image.png');
-
   /// File path: assets/images/light_bulb_off.png
   AssetGenImage get lightBulbOff =>
       const AssetGenImage('assets/images/light_bulb_off.png');
@@ -139,9 +119,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
-  /// File path: assets/images/news.png
-  AssetGenImage get news => const AssetGenImage('assets/images/news.png');
-
   /// File path: assets/images/ptit.png
   AssetGenImage get ptit => const AssetGenImage('assets/images/ptit.png');
 
@@ -154,39 +131,33 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-        appBarBg,
-        appIcon,
-        avatarDefault,
-        background,
-        bubbleChatPurple9,
-        bubbleChatWhite9,
-        carouselSlider1,
-        carouselSlider2,
-        carouselSlider3,
-        chatNoHistory,
-        coverImageDefault,
-        icCloudy,
-        icFoggy,
-        icLightRain,
-        icQrCode,
-        icRain,
-        icSnow,
-        icStorm,
-        icSunWithCloud,
-        icSunny,
-        icSunrise,
-        icSunset,
-        icWindy,
-        kitImage,
-        lightBulbOff,
-        lightBulbOn,
-        loading,
-        logo,
-        news,
-        ptit,
-        pumpOff,
-        pumpOn
-      ];
+    avatarDefault,
+    background,
+    bubbleChatPurple9,
+    bubbleChatWhite9,
+    chatNoHistory,
+    coverImageDefault,
+    favicon32,
+    icCloudy,
+    icFoggy,
+    icLightRain,
+    icQrCode,
+    icRain,
+    icSnow,
+    icStorm,
+    icSunWithCloud,
+    icSunny,
+    icSunrise,
+    icSunset,
+    icWindy,
+    lightBulbOff,
+    lightBulbOn,
+    loading,
+    logo,
+    ptit,
+    pumpOff,
+    pumpOn,
+  ];
 }
 
 class $AssetsSvgGen {
@@ -338,45 +309,45 @@ class $AssetsSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icArrowLeft,
-        icArrowRight,
-        icBubbleChat,
-        icCallChat,
-        icCheckBoxActive,
-        icCheckBoxInactive,
-        icClose,
-        icDiagnoseActive,
-        icDiagnoseInactive,
-        icEye,
-        icEyeOff,
-        icGoogle,
-        icGoogleMap,
-        icHighTemperature,
-        icHumidity,
-        icInfo,
-        icLeafActive,
-        icLeafInactive,
-        icLowTemperature,
-        icMapPin,
-        icPhone,
-        icPlantDiseaseDetection,
-        icSignPost,
-        icSmsMessage,
-        icSoilMoisture,
-        icStoreActive,
-        icStoreInactive,
-        icUserActive,
-        icUserInactive,
-        icon16ArrowLeft,
-        icon16ArrowRight,
-        icon16CheckOff,
-        icon16CheckOn,
-        icon20BellOff,
-        icon20BellOn,
-        icon20Close,
-        icon28CheckBlank,
-        icon28CheckIdeal
-      ];
+    icArrowLeft,
+    icArrowRight,
+    icBubbleChat,
+    icCallChat,
+    icCheckBoxActive,
+    icCheckBoxInactive,
+    icClose,
+    icDiagnoseActive,
+    icDiagnoseInactive,
+    icEye,
+    icEyeOff,
+    icGoogle,
+    icGoogleMap,
+    icHighTemperature,
+    icHumidity,
+    icInfo,
+    icLeafActive,
+    icLeafInactive,
+    icLowTemperature,
+    icMapPin,
+    icPhone,
+    icPlantDiseaseDetection,
+    icSignPost,
+    icSmsMessage,
+    icSoilMoisture,
+    icStoreActive,
+    icStoreInactive,
+    icUserActive,
+    icUserInactive,
+    icon16ArrowLeft,
+    icon16ArrowRight,
+    icon16CheckOff,
+    icon16CheckOn,
+    icon20BellOff,
+    icon20BellOn,
+    icon20Close,
+    icon28CheckBlank,
+    icon28CheckIdeal,
+  ];
 }
 
 class $AssetsTranslationsGen {
@@ -390,7 +361,7 @@ class $AssetsTranslationsGen {
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const $AssetsEnvGen env = $AssetsEnvGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
@@ -399,11 +370,7 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
 
@@ -428,10 +395,10 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -463,15 +430,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;
@@ -480,17 +440,11 @@ class AssetGenImage {
 }
 
 class SvgGenImage {
-  const SvgGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = false;
+  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}})
+    : _isVecFormat = false;
 
-  const SvgGenImage.vec(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = true;
+  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}})
+    : _isVecFormat = true;
 
   final String _assetName;
   final Size? size;
@@ -544,7 +498,8 @@ class SvgGenImage {
       placeholderBuilder: placeholderBuilder,
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
-      colorFilter: colorFilter ??
+      colorFilter:
+          colorFilter ??
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
