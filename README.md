@@ -11,22 +11,5 @@ Flutter Web
 ## Version
 - Flutter 3.47.2
 
-## Deploy
-### Command:
-#### Build Web
-```flutter build web```
-
-#### Deploy Firebase
-```firebase login```
-```firebase init hosting```
-```firebase deploy```
-
-#### Command to avoid CORS Error
-```flutter run -d chrome --web-renderer html```
-
-#### Note:
-- Cần cài đặt firebase-tools
-- Khi deploy không dùng BASE_URL mà set string cứng
-
 ## Link web
-https://smart-garden-cd3b0.web.app/
+https://smartgardenptit.duckdns.org/dashboard
